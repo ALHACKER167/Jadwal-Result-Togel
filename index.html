@@ -153,6 +153,136 @@ body{background:var(--bg);color:var(--g);font-family:'Share Tech Mono',monospace
 @keyframes shk{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
 @keyframes pbtn{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
 
+/* ══ LOADING SCREEN ══ */
+#loader{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:#000800;z-index:99999;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  transition:opacity .7s ease;
+}
+#loader.fade-out{opacity:0;pointer-events:none;}
+#loader-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;}
+#loader-lt-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.ld-wrap{
+  position:relative;z-index:1;
+  text-align:center;
+  padding:24px 20px;
+  width:100%;
+  display:flex;flex-direction:column;align-items:center;
+}
+.ld-skull{
+  font-size:70px;margin-bottom:14px;
+  filter:drop-shadow(0 0 24px #00ff41);
+  animation:ld-pulse 1s infinite;
+}
+@keyframes ld-pulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 14px #00ff41);}
+  50%{transform:scale(1.12);filter:drop-shadow(0 0 44px #00ff41);}
+}
+.ld-brand{
+  font-family:'Orbitron',monospace;font-weight:900;
+  font-size:clamp(22px,6vw,46px);
+  color:var(--gold);text-shadow:var(--glow-gold);
+  letter-spacing:6px;margin-bottom:6px;animation:flk 2s infinite;
+}
+.ld-sub{
+  font-family:'VT323',monospace;font-size:22px;
+  color:var(--g);letter-spacing:6px;margin-bottom:22px;text-shadow:var(--glow);
+}
+.ld-welcome{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(9px,2.2vw,15px);
+  color:var(--gold);letter-spacing:3px;
+  margin-bottom:32px;text-shadow:var(--glow-gold);
+  border:1px solid var(--gold);padding:11px 28px;
+  background:rgba(255,215,0,.06);animation:pgold 1.5s infinite;
+  white-space:nowrap;
+  max-width:90vw;overflow:hidden;text-overflow:ellipsis;
+}
+.ld-progress-wrap{
+  width:min(460px,82vw);
+  display:flex;flex-direction:column;align-items:center;
+}
+.ld-bar-wrap{
+  width:100%;
+  background:#001200;border:1px solid var(--g);
+  height:8px;margin-bottom:10px;overflow:hidden;
+  box-shadow:0 0 10px rgba(0,255,65,.2);
+}
+.ld-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#003300,var(--g2),var(--g),#aaffcc);
+  box-shadow:0 0 16px var(--g),0 0 4px #fff;
+  transition:width .08s linear;
+}
+.ld-pct{
+  font-family:'Orbitron',monospace;font-size:15px;
+  color:var(--g);text-shadow:var(--glow);letter-spacing:4px;
+  margin-bottom:8px;
+}
+.ld-log{
+  font-size:11px;color:var(--g2);letter-spacing:2px;
+  height:18px;opacity:.85;text-align:center;
+}
+
+/* ══ LIGHTNING / ANTI-STEAL ══ */
+#steal-overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  z-index:99998;
+  display:none;
+  pointer-events:all;
+  background:#000;
+  overflow:hidden;
+}
+#steal-overlay.on{display:block;}
+
+#lightning-canvas{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;
+}
+
+/* Rain streaks */
+#rain-canvas{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;opacity:.35;
+}
+
+#steal-modal{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,.92);
+  border:2px solid var(--gold);
+  padding:40px 44px;text-align:center;
+  box-shadow:var(--glow-gold),0 0 120px rgba(255,215,0,.25),inset 0 0 40px rgba(255,215,0,.04);
+  max-width:440px;width:90%;
+  z-index:2;position:absolute;
+  animation:shk .4s ease;
+}
+#steal-modal::before{
+  content:'';position:absolute;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,215,0,.015) 2px,rgba(255,215,0,.015) 4px);
+  pointer-events:none;
+}
+.steal-icon{font-size:72px;margin-bottom:8px;display:block;
+  animation:steal-bounce .5s infinite alternate;}
+@keyframes steal-bounce{0%{transform:scale(1) rotate(-5deg);}100%{transform:scale(1.15) rotate(5deg);}}
+.steal-t1{font-family:'Orbitron',monospace;font-size:clamp(16px,3.5vw,24px);font-weight:900;
+  color:var(--red);text-shadow:var(--glow-red);letter-spacing:3px;margin-bottom:10px;
+  animation:flk .35s infinite;}
+.steal-t2{font-family:'VT323',monospace;font-size:clamp(26px,6vw,40px);
+  color:var(--gold);text-shadow:var(--glow-gold);letter-spacing:2px;line-height:1.2;margin-bottom:4px;}
+.steal-t3{font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--g);
+  letter-spacing:2px;margin-bottom:24px;text-shadow:var(--glow);}
+.steal-ok{
+  background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,215,0,.22),rgba(255,215,0,.1));
+  border:2px solid var(--gold);color:var(--gold);
+  font-family:'Orbitron',monospace;font-size:14px;font-weight:700;
+  padding:13px 48px;letter-spacing:5px;cursor:pointer;
+  text-shadow:var(--glow-gold);transition:all .2s;animation:pbtn 1.2s infinite;
+  display:block;margin:0 auto;
+}
+.steal-ok:hover{background:var(--gold);color:#000;box-shadow:var(--glow-gold);}
+
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:#002200;border:1px solid var(--g)}
@@ -165,6 +295,37 @@ body{background:var(--bg);color:var(--g);font-family:'Share Tech Mono',monospace
 
 <canvas id="mc"></canvas>
 <div id="sc"></div>
+
+<!-- ══ LOADING SCREEN ══ -->
+<div id="loader">
+  <canvas id="loader-canvas"></canvas>
+  <canvas id="loader-lt-canvas"></canvas>
+  <div class="ld-wrap">
+    <div class="ld-skull">☠</div>
+    <div class="ld-brand">ALHACKER168</div>
+    <div class="ld-sub">[ SYSTEM INITIALIZING... ]</div>
+    <div class="ld-welcome">SELAMAT DATANG DI JADWAL TOGEL ALHACKER168</div>
+    <div class="ld-progress-wrap">
+      <div class="ld-bar-wrap"><div class="ld-bar" id="ldBar"></div></div>
+      <div class="ld-pct" id="ldPct">0%</div>
+      <div class="ld-log" id="ldLog">Memuat sistem...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LIGHTNING / ANTI-STEAL ══ -->
+<div id="steal-overlay">
+  <canvas id="lightning-canvas"></canvas>
+  <canvas id="rain-canvas"></canvas>
+  <div id="steal-modal">
+    <span class="steal-icon">😱</span>
+    <div class="steal-t1">⚡ HACKER TERDETEKSI! ⚡</div>
+    <div class="steal-t2">JANGAN CURI DONG!!!</div>
+    <div class="steal-t2">SAYA MASIH PEMULA</div>
+    <div class="steal-t3">AMPUN PUH SEPUH 🙏</div>
+    <button class="steal-ok" onclick="closeSteal()">[ MAAFKAN SAYA ]</button>
+  </div>
+</div>
 
 <!-- ALARM MODAL -->
 <div id="ovl">
@@ -307,7 +468,214 @@ const DATA=[
   {n:"KINGKONG 4D MALAM",d:"SENIN - MINGGU",      t:"23:30",b:"23:45"},
 ];
 
-/* ── MATRIX RAIN ── */
+/* ── LOADING SCREEN ── */
+(function(){
+  const lc=document.getElementById('loader-canvas');
+  const lx=lc.getContext('2d');
+  const CH='アイウエオカキクケコサシスセソ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%';
+  const FS=13; let dr2=[];
+  function resL(){lc.width=window.innerWidth;lc.height=window.innerHeight;
+    dr2=Array.from({length:Math.floor(lc.width/FS)},()=>Math.floor(Math.random()*-lc.height/FS));}
+  resL(); window.addEventListener('resize',resL);
+  function drawL(){
+    lx.fillStyle='rgba(0,8,0,0.08)';lx.fillRect(0,0,lc.width,lc.height);
+    lx.font=`bold ${FS}px 'Share Tech Mono',monospace`;
+    for(let i=0;i<dr2.length;i++){
+      const c=CH[Math.floor(Math.random()*CH.length)],x=i*FS,y=dr2[i]*FS,r=Math.random();
+      lx.fillStyle=r>.95?'#ffffff':r>.7?'#aaffbb':'#00ff41';
+      lx.fillText(c,x,y);
+      if(y>lc.height&&Math.random()>.975)dr2[i]=0;else dr2[i]++;
+    }
+  }
+  const ldInt=setInterval(drawL,40);
+
+  const logs=[
+    'Memuat database pasaran...','Menghubungkan ke server...','Inisialisasi alarm sistem...',
+    'Memuat jadwal WIB...','Konfigurasi notifikasi...','Mengaktifkan matrix...',
+    'Verifikasi keamanan...','Sistem siap digunakan!',
+  ];
+  const bar=document.getElementById('ldBar');
+  const pct=document.getElementById('ldPct');
+  const log=document.getElementById('ldLog');
+  let p=0, li=0;
+  const step=setInterval(()=>{
+    p+=Math.random()*8+4; if(p>100)p=100;
+    bar.style.width=p+'%';
+    pct.textContent=Math.floor(p)+'%';
+    if(li<logs.length) log.textContent='▸ '+logs[li++];
+    if(p>=100){
+      clearInterval(step);
+      setTimeout(()=>{
+        const ld=document.getElementById('loader');
+        ld.classList.add('fade-out');
+        setTimeout(()=>{ld.style.display='none';clearInterval(ldInt);},650);
+      },400);
+    }
+  },130);
+})();
+
+/* ── LIGHTNING / ANTI-STEAL ── */
+(function(){
+  const ov  = document.getElementById('steal-overlay');
+  const lc  = document.getElementById('lightning-canvas');
+  const rc  = document.getElementById('rain-canvas');
+  const lx  = lc.getContext('2d');
+  const rx  = rc.getContext('2d');
+  let ltLoop=null, rainLoop=null, flashLoop=null;
+  let active=false;
+  let rainDrops=[];
+
+  function resize(){
+    lc.width=rc.width=window.innerWidth;
+    lc.height=rc.height=window.innerHeight;
+    initRain();
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  /* ── Rain ── */
+  function initRain(){
+    rainDrops=[];
+    const cols=Math.floor(rc.width/3);
+    for(let i=0;i<cols;i++) rainDrops.push({x:Math.random()*rc.width,y:Math.random()*rc.height,spd:8+Math.random()*10,len:10+Math.random()*20});
+  }
+  function drawRain(){
+    rx.clearRect(0,0,rc.width,rc.height);
+    rx.strokeStyle='rgba(150,200,255,0.55)';
+    rx.lineWidth=0.8;
+    for(let d of rainDrops){
+      rx.beginPath();
+      rx.moveTo(d.x,d.y);
+      rx.lineTo(d.x-d.len*.2,d.y+d.len);
+      rx.stroke();
+      d.y+=d.spd;
+      if(d.y>rc.height){d.y=-20;d.x=Math.random()*rc.width;}
+    }
+  }
+
+  /* ── Lightning bolt ── */
+  function bolt(x1,y1,x2,y2,w,depth){
+    if(depth<=0||w<0.3) return;
+    const mx=(x1+x2)/2 + (Math.random()-.5)*Math.abs(y2-y1)*.8;
+    const my=(y1+y2)/2 + (Math.random()-.5)*40;
+    // Core bright
+    lx.beginPath(); lx.moveTo(x1,y1); lx.lineTo(mx,my); lx.lineTo(x2,y2);
+    lx.strokeStyle=`rgba(255,255,255,${0.6+Math.random()*.4})`;
+    lx.lineWidth=w; lx.shadowColor='#ffffaa'; lx.shadowBlur=w*12;
+    lx.stroke();
+    // Glow outer
+    lx.beginPath(); lx.moveTo(x1,y1); lx.lineTo(mx,my); lx.lineTo(x2,y2);
+    lx.strokeStyle=`rgba(255,230,80,${0.2+Math.random()*.3})`;
+    lx.lineWidth=w*3; lx.shadowBlur=w*30;
+    lx.stroke();
+    // Branches
+    if(Math.random()>.4) bolt(mx,my,mx+(Math.random()-.5)*250,my+50+Math.random()*180,w*.55,depth-1);
+    if(Math.random()>.6) bolt(mx,my,mx+(Math.random()-.5)*150,my-30+Math.random()*100,w*.4,depth-1);
+  }
+
+  function flashLightning(){
+    lx.clearRect(0,0,lc.width,lc.height);
+    // Screen flash
+    const flash=Math.random()*.18;
+    if(flash>0.08){
+      lx.fillStyle=`rgba(200,220,255,${flash})`;
+      lx.fillRect(0,0,lc.width,lc.height);
+    }
+    // Draw 2-4 bolts
+    const nb=2+Math.floor(Math.random()*3);
+    for(let i=0;i<nb;i++){
+      const sx=100+Math.random()*(lc.width-200);
+      const ex=sx+(Math.random()-.5)*300;
+      const ey=lc.height*.5+Math.random()*lc.height*.5;
+      bolt(sx,0,ex,ey,1.5+Math.random()*2,6);
+    }
+  }
+
+  /* ── Thunder sound (real rumble) ── */
+  function playThunder(){
+    try{
+      const ac=getAC();
+      const sr=ac.sampleRate;
+      const dur=1.8+Math.random()*1.4;
+      const buf=ac.createBuffer(2,sr*dur,sr);
+      for(let ch=0;ch<2;ch++){
+        const d=buf.getChannelData(ch);
+        for(let i=0;i<d.length;i++){
+          // initial crack
+          const crack = i<sr*.05 ? (1-(i/(sr*.05)))*.9 : 0;
+          // long rumble with envelope
+          const rumbleEnv = i<sr*.1 ? i/(sr*.1) : Math.exp(-(i-sr*.1)/(sr*.6));
+          const rumble=(Math.random()*2-1)*rumbleEnv*.7;
+          d[i]=crack*(Math.random()*2-1)+rumble;
+        }
+      }
+      const src=ac.createBufferSource();
+      const gain=ac.createGain(); gain.gain.value=1.0;
+      // Low pass for thunder rumble
+      const flt=ac.createBiquadFilter(); flt.type='lowpass'; flt.frequency.value=180;
+      // Compressor for punch
+      const comp=ac.createDynamicsCompressor();
+      comp.threshold.value=-20; comp.ratio.value=8;
+      src.buffer=buf;
+      src.connect(flt); flt.connect(comp); comp.connect(gain); gain.connect(ac.destination);
+      src.start();
+    }catch(e){ console.warn('Thunder err:',e); }
+  }
+
+  /* ── Start/Stop ── */
+  function startSteal(){
+    if(active) return;
+    active=true;
+    unlockAudio();
+    ov.classList.add('on');
+
+    // Immediate first crack
+    flashLightning(); flashLightning();
+    playThunder();
+
+    // Lightning loop — fast & aggressive
+    ltLoop=setInterval(()=>{
+      flashLightning();
+      if(Math.random()>.4){ setTimeout(flashLightning,70); }
+      if(Math.random()>.6){ setTimeout(flashLightning,140); }
+    }, 250);
+
+    // Thunder loop
+    flashLoop=setInterval(()=>{
+      if(Math.random()>.45) playThunder();
+    }, 900);
+
+    // Rain loop
+    rainLoop=setInterval(drawRain, 30);
+  }
+
+  window.closeSteal=function(){
+    active=false;
+    clearInterval(ltLoop); clearInterval(flashLoop); clearInterval(rainLoop);
+    lx.clearRect(0,0,lc.width,lc.height);
+    rx.clearRect(0,0,rc.width,rc.height);
+    ov.classList.remove('on');
+  };
+
+  function triggerSteal(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    startSteal();
+    return false;
+  }
+
+  // Right click
+  document.addEventListener('contextmenu', triggerSteal);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e){
+    const bad=(
+      e.key==='F12' ||
+      (e.ctrlKey && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) ||
+      (e.ctrlKey && ['u','U','s','S'].includes(e.key))
+    );
+    if(bad){ e.preventDefault(); e.stopPropagation(); startSteal(); }
+  });
+})();
 (function(){
   const cv=document.getElementById('mc'),cx=cv.getContext('2d');
   const CH='アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&';
