@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEK JADWAL TOGEL ALHACKER168</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff41;
+    --green2: #00cc33;
+    --green3: #003300;
+    --gold: #ffd700;
+    --gold2: #ffaa00;
+    --red: #ff0040;
+    --cyan: #00ffff;
+    --bg: #000500;
+    --panel: #020f02;
+    --border: #00ff4133;
+    --glow: 0 0 10px #00ff41, 0 0 20px #00ff4180, 0 0 40px #00ff4140;
+    --glow-gold: 0 0 10px #ffd700, 0 0 20px #ffd70080;
+    --glow-red: 0 0 10px #ff0040, 0 0 20px #ff004080, 0 0 40px #ff004040;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* MATRIX RAIN CANVAS */
+  #matrix-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  /* SCANLINES */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* VIGNETTE */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 30px 20px 20px;
+    position: relative;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, transparent, var(--green3), transparent);
+    border-top: 1px solid var(--green);
+    border-bottom: 1px solid var(--green);
+    padding: 4px 40px;
+    font-size: 11px;
+    letter-spacing: 8px;
+    color: var(--green2);
+    margin-bottom: 10px;
+    animation: pulse-border 2s infinite;
+  }
+
+  .header-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(20px, 4vw, 42px);
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    letter-spacing: 4px;
+    line-height: 1.2;
+    animation: flicker 4s infinite;
+  }
+
+  .header-sub {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--green);
+    letter-spacing: 6px;
+    margin-top: 6px;
+    text-shadow: var(--glow);
+  }
+
+  .header-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), var(--gold), var(--green), transparent);
+    margin: 16px 0;
+    animation: scan-line 3s linear infinite;
+  }
+
+  /* CLOCK */
+  .clock-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 10px 0 20px;
+    flex-wrap: wrap;
+  }
+
+  .clock-box {
+    background: var(--panel);
+    border: 1px solid var(--green);
+    border-radius: 4px;
+    padding: 12px 24px;
+    text-align: center;
+    box-shadow: var(--glow), inset 0 0 20px rgba(0,255,65,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .clock-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(transparent 330deg, rgba(0,255,65,0.1) 360deg);
+    animation: rotate 4s linear infinite;
+  }
+
+  .clock-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--green2);
+    margin-bottom: 4px;
+  }
+
+  .clock-time {
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--green);
+    text-shadow: var(--glow);
+    letter-spacing: 4px;
+  }
+
+  .clock-date {
+    font-size: 11px;
+    color: var(--green2);
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 8px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 11px;
+    flex-wrap: wrap;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: var(--glow);
+    animation: blink 1s infinite;
+    flex-shrink: 0;
+  }
+
+  .status-text { color: var(--green2); letter-spacing: 2px; }
+
+  .next-alarm-box {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .next-alarm-label {
+    color: var(--green2);
+    font-size: 10px;
+    letter-spacing: 3px;
+  }
+
+  .next-alarm-name {
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: var(--glow-gold);
+    letter-spacing: 2px;
+  }
+
+  .next-alarm-time {
+    color: var(--cyan);
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    text-shadow: 0 0 10px var(--cyan);
+  }
+
+  .countdown-box {
+    color: var(--red);
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    text-shadow: var(--glow-red);
+    animation: pulse-red 1s infinite;
+  }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--green2);
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 5px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--green);
+    color: #000;
+    box-shadow: var(--glow);
+  }
+
+  /* SEARCH */
+  .search-box {
+    margin-left: auto;
+    position: relative;
+  }
+
+  .search-input {
+    background: var(--panel);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 5px 14px 5px 30px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    letter-spacing: 2px;
+    width: 200px;
+  }
+
+  .search-input::placeholder { color: var(--green3); }
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--green2);
+    font-size: 12px;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--green);
+    box-shadow: var(--glow);
+    transition: all 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--green);
+    box-shadow: var(--glow), inset 0 0 20px rgba(0,255,65,0.05);
+    transform: translateY(-2px);
+  }
+
+  .card:hover::before { width: 100%; opacity: 0.03; }
+
+  .card.open {
+    border-color: var(--green);
+    box-shadow: var(--glow);
+  }
+
+  .card.open::before { background: var(--green); }
+
+  .card.closed {
+    border-color: rgba(255,0,64,0.3);
+  }
+
+  .card.closed::before { background: var(--red); box-shadow: var(--glow-red); }
+
+  .card.soon {
+    border-color: var(--gold);
+    animation: pulse-card 1.5s infinite;
+  }
+
+  .card.soon::before { background: var(--gold); box-shadow: var(--glow-gold); }
+
+  .card-corner {
+    position: absolute;
+    top: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 24px 24px 0;
+    border-color: transparent var(--green) transparent transparent;
+    transition: all 0.3s;
+  }
+
+  .card.closed .card-corner { border-color: transparent var(--red) transparent transparent; }
+  .card.soon .card-corner { border-color: transparent var(--gold) transparent transparent; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .card-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    letter-spacing: 1px;
+    line-height: 1.3;
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .card-status {
+    font-size: 9px;
+    padding: 3px 8px;
+    letter-spacing: 2px;
+    border-radius: 1px;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .status-open { background: rgba(0,255,65,0.15); color: var(--green); border: 1px solid var(--green); text-shadow: var(--glow); }
+  .status-closed { background: rgba(255,0,64,0.15); color: var(--red); border: 1px solid var(--red); text-shadow: var(--glow-red); }
+  .status-soon { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid var(--gold); animation: blink 0.8s infinite; }
+
+  .card-days {
+    font-size: 9px;
+    color: var(--green2);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .days-icon { opacity: 0.6; }
+
+  .card-times {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .time-block {
+    background: rgba(0,255,65,0.04);
+    border: 1px solid rgba(0,255,65,0.15);
+    padding: 6px 8px;
+    border-radius: 1px;
+  }
+
+  .time-block.close-block {
+    background: rgba(255,0,64,0.04);
+    border-color: rgba(255,0,64,0.2);
+  }
+
+  .time-block-label {
+    font-size: 8px;
+    color: var(--green2);
+    letter-spacing: 3px;
+    margin-bottom: 3px;
+  }
+
+  .time-block.close-block .time-block-label { color: rgba(255,0,64,0.7); }
+
+  .time-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green);
+    text-shadow: var(--glow);
+    letter-spacing: 2px;
+  }
+
+  .time-block.close-block .time-value { color: var(--red); text-shadow: var(--glow-red); }
+
+  .card-countdown {
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-special {
+    margin-top: 6px;
+    font-size: 9px;
+    color: rgba(255,215,0,0.6);
+    letter-spacing: 2px;
+    padding: 3px 6px;
+    background: rgba(255,215,0,0.05);
+    border-left: 2px solid var(--gold);
+  }
+
+  .hokidraw-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05));
+    border: 1px solid var(--gold);
+    padding: 2px 10px;
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    animation: pulse-border 1.5s infinite;
+  }
+
+  /* ALARM MODAL */
+  .alarm-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    animation: overlay-in 0.3s ease;
+  }
+
+  .alarm-overlay.active { display: flex; }
+
+  .alarm-modal {
+    background: #000;
+    border: 2px solid var(--red);
+    max-width: 480px;
+    width: 90%;
+    position: relative;
+    box-shadow: var(--glow-red), 0 0 80px rgba(255,0,64,0.3);
+    animation: modal-shake 0.5s ease, modal-glow 1.5s infinite alternate;
+    overflow: hidden;
+  }
+
+  .alarm-modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(255,0,64,0.03) 2px, rgba(255,0,64,0.03) 4px
+    );
+    pointer-events: none;
+  }
+
+  .alarm-header {
+    background: linear-gradient(90deg, rgba(255,0,64,0.3), rgba(255,0,64,0.1));
+    border-bottom: 1px solid var(--red);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .alarm-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .alarm-icon {
+    font-size: 24px;
+    animation: spin 1s linear infinite;
+  }
+
+  .alarm-header-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    text-shadow: var(--glow-red);
+    letter-spacing: 4px;
+  }
+
+  .alarm-time-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+  }
+
+  .alarm-body {
+    padding: 30px 24px;
+    text-align: center;
+  }
+
+  .alarm-market-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    animation: flicker 0.5s infinite;
+  }
+
+  .alarm-betclose-text {
+    font-family: 'VT323', monospace;
+    font-size: 48px;
+    color: var(--red);
+    text-shadow: var(--glow-red);
+    letter-spacing: 6px;
+    animation: pulse-red 0.8s infinite;
+    margin: 10px 0;
+    line-height: 1;
+  }
+
+  .alarm-sub-text {
+    font-size: 11px;
+    color: var(--green2);
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+  }
+
+  .alarm-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .alarm-detail-box {
+    background: rgba(255,0,64,0.05);
+    border: 1px solid rgba(255,0,64,0.2);
+    padding: 10px;
+  }
+
+  .alarm-detail-label {
+    font-size: 9px;
+    color: rgba(255,0,64,0.6);
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+
+  .alarm-detail-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+  }
+
+  .alarm-ok-btn {
+    background: linear-gradient(90deg, rgba(255,0,64,0.2), rgba(255,0,64,0.3), rgba(255,0,64,0.2));
+    border: 2px solid var(--red);
+    color: var(--red);
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 60px;
+    letter-spacing: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-shadow: var(--glow-red);
+    position: relative;
+    overflow: hidden;
+    animation: btn-pulse 1.5s infinite;
+  }
+
+  .alarm-ok-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,0,64,0.3), transparent);
+    transition: left 0.3s;
+  }
+
+  .alarm-ok-btn:hover {
+    background: var(--red);
+    color: #000;
+    box-shadow: var(--glow-red);
+    text-shadow: none;
+  }
+
+  .alarm-ok-btn:hover::before { left: 100%; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 30px;
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-text {
+    font-size: 10px;
+    color: rgba(0,255,65,0.3);
+    letter-spacing: 4px;
+  }
+
+  .footer-brand {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    letter-spacing: 6px;
+    margin-top: 6px;
+  }
+
+  /* COUNTER STATS */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--green);
+    box-shadow: var(--glow);
+    animation: scan 3s ease-in-out infinite;
+  }
+
+  .stat-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+  }
+
+  .stat-label {
+    font-size: 9px;
+    color: var(--green2);
+    letter-spacing: 3px;
+    margin-top: 2px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.8; }
+    97% { opacity: 0.3; }
+    98% { opacity: 1; }
+    99% { opacity: 0.7; }
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 5px rgba(0,255,65,0.3); }
+    50% { box-shadow: 0 0 15px rgba(0,255,65,0.6); }
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  @keyframes pulse-card {
+    0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.3); }
+    50% { box-shadow: 0 0 20px rgba(255,215,0,0.6); }
+  }
+
+  @keyframes scan-line {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes scan {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+
+  @keyframes overlay-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes modal-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  @keyframes modal-glow {
+    from { box-shadow: var(--glow-red), 0 0 40px rgba(255,0,64,0.2); }
+    to { box-shadow: var(--glow-red), 0 0 80px rgba(255,0,64,0.5); }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes btn-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--green3); border: 1px solid var(--green); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--green); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .stats-bar .stat-box { min-width: 80px; }
+    .filter-bar { justify-content: center; }
+    .search-box { margin-left: 0; width: 100%; }
+    .search-input { width: 100%; }
+    .next-alarm-box { margin-left: 0; }
+  }
+
+  @media (max-width: 400px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .glitch-text {
+    animation: glitch 5s infinite;
+  }
+
+  @keyframes glitch {
+    0%, 90%, 100% { text-shadow: var(--glow-gold); transform: none; }
+    91% { text-shadow: 2px 0 var(--red), -2px 0 var(--cyan); transform: translateX(2px); }
+    92% { text-shadow: -2px 0 var(--red), 2px 0 var(--cyan); transform: translateX(-2px); }
+    93% { text-shadow: var(--glow-gold); transform: none; }
+  }
+
+  .terminal-cursor::after {
+    content: '█';
+    animation: blink 0.7s infinite;
+    color: var(--green);
+  }
+
+  .alarm-queue-badge {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--panel);
+    border: 1px solid var(--gold);
+    padding: 6px 14px;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    z-index: 100;
+    box-shadow: var(--glow-gold);
+    display: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="matrix-canvas"></canvas>
+
+<!-- ALARM MODAL -->
+<div class="alarm-overlay" id="alarmOverlay">
+  <div class="alarm-modal">
+    <div class="alarm-header">
+      <div class="alarm-title-row">
+        <span class="alarm-icon">⚠</span>
+        <div>
+          <div class="alarm-header-text">!! BET CLOSE ALERT !!</div>
+        </div>
+      </div>
+      <div class="alarm-time-display" id="alarmCurrentTime">--:--:--</div>
+    </div>
+    <div class="alarm-body">
+      <div class="alarm-market-name" id="alarmMarketName">MARKET NAME</div>
+      <div class="alarm-betclose-text">BET CLOSE</div>
+      <div class="alarm-sub-text">PASARAN INI SUDAH TUTUP &nbsp;|&nbsp; SEGERA PASANG SEBELUM CLOSE</div>
+      <div class="alarm-details">
+        <div class="alarm-detail-box">
+          <div class="alarm-detail-label">TUTUP JAM</div>
+          <div class="alarm-detail-value" id="alarmCloseTime">--:--</div>
+        </div>
+        <div class="alarm-detail-box">
+          <div class="alarm-detail-label">BUKA JAM</div>
+          <div class="alarm-detail-value" id="alarmOpenTime">--:--</div>
+        </div>
+      </div>
+      <button class="alarm-ok-btn" onclick="dismissAlarm()">[ OK ]</button>
+    </div>
+  </div>
+</div>
+
+<div class="alarm-queue-badge" id="queueBadge">▶ ANTRIAN ALARM: <span id="queueCount">0</span></div>
+
+<div class="wrapper">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">▓▓▓ ALHACKER168 SYSTEM ▓▓▓</div>
+    <div class="header-title glitch-text">CEK JADWAL TOGEL</div>
+    <div class="header-title" style="color: var(--green); font-size: clamp(18px,3.5vw,36px); margin-top:4px;">ALHACKER168</div>
+    <div class="header-sub">[ REAL-TIME BET CLOSE ALARM SYSTEM ] <span class="terminal-cursor"></span></div>
+    <div class="header-line"></div>
+  </div>
+
+  <!-- CLOCK -->
+  <div class="clock-panel">
+    <div class="clock-box">
+      <div class="clock-label">▸ WAKTU WIB</div>
+      <div class="clock-time" id="mainClock">00:00:00</div>
+      <div class="clock-date" id="mainDate">---</div>
+    </div>
+    <div class="clock-box" style="border-color: var(--gold); box-shadow: var(--glow-gold), inset 0 0 20px rgba(255,215,0,0.03);">
+      <div class="clock-label" style="color: var(--gold2);">▸ NEXT ALARM IN</div>
+      <div class="clock-time" id="nextAlarmCountdown" style="color: var(--gold); text-shadow: var(--glow-gold); font-size: 26px;">--:--:--</div>
+      <div class="clock-date" id="nextAlarmInfo" style="color: var(--gold2);">CALCULATING...</div>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <div class="status-text">ALARM SYSTEM: <span style="color: var(--green);">AKTIF</span></div>
+    <div class="status-text">|</div>
+    <div class="status-text">TOTAL PASARAN: <span style="color: var(--gold);" id="totalCount">--</span></div>
+    <div class="status-text">|</div>
+    <div class="status-text">BUKA: <span style="color: var(--green);" id="openCount">--</span></div>
+    <div class="status-text">|</div>
+    <div class="status-text">TUTUP: <span style="color: var(--red);" id="closedCount">--</span></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-box">
+      <div class="stat-value" id="statTotal">0</div>
+      <div class="stat-label">TOTAL PASARAN</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="statOpen" style="color: var(--green); text-shadow: var(--glow);">0</div>
+      <div class="stat-label">SEDANG BUKA</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="statClosed" style="color: var(--red); text-shadow: var(--glow-red);">0</div>
+      <div class="stat-label">SUDAH TUTUP</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="statSoon" style="color: var(--gold); text-shadow: var(--glow-gold);">0</div>
+      <div class="stat-label">SEGERA TUTUP</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="statAlarms" style="color: var(--cyan); text-shadow: 0 0 10px var(--cyan);">0</div>
+      <div class="stat-label">ALARM HARI INI</div>
+    </div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <span class="filter-label">▸ FILTER:</span>
+    <button class="filter-btn active" onclick="filterCards('all', this)">SEMUA</button>
+    <button class="filter-btn" onclick="filterCards('open', this)">BUKA</button>
+    <button class="filter-btn" onclick="filterCards('closed', this)">TUTUP</button>
+    <button class="filter-btn" onclick="filterCards('soon', this)">SEGERA TUTUP</button>
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="CARI PASARAN..." oninput="searchCards()">
+    </div>
+  </div>
+
+  <!-- CARDS GRID -->
+  <div class="grid" id="cardsGrid"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-text">▓▓▓ SISTEM ALARM BET CLOSE OTOMATIS ▓▓▓</div>
+    <div class="footer-text" style="margin-top:4px;">NOTIFIKASI AKAN MUNCUL OTOMATIS SAAT JAM TUTUP BET</div>
+    <div class="footer-brand">ALHACKER168</div>
+    <div class="footer-text" style="margin-top:8px;">© 2024 ALL RIGHTS RESERVED</div>
+  </div>
+</div>
+
+<script>
+// ============================================
+// DATA PASARAN
+// ============================================
+const pasaranData = [
+  { name: "HOKIDRAW 5D", days: "SENIN - MINGGU", tutup: null, buka: null, special: "RESULT 24 KALI - BUKA 1 JAM SEKALI", isHoki: true },
+  { name: "TOTOMACAU PAGI", days: "SENIN - MINGGU", tutup: "00:00", buka: "00:15" },
+  { name: "KENTUCKY MIDDAY", days: "SENIN - MINGGU", tutup: "01:05", buka: "01:20" },
+  { name: "FLORIDA MIDDAY", days: "SENIN - MINGGU", tutup: "01:20", buka: "01:30" },
+  { name: "HUAHIN 0100", days: "SENIN - MINGGU", tutup: "00:45", buka: "01:00" },
+  { name: "BANGKOK 0130", days: "SENIN - MINGGU", tutup: "01:15", buka: "01:30" },
+  { name: "NEWYORK MIDDAY", days: "SENIN - MINGGU", tutup: "02:15", buka: "02:25" },
+  { name: "CAROLINA DAY", days: "SENIN - MINGGU", tutup: "02:45", buka: "03:00" },
+  { name: "BRUNEI 02", days: "SENIN - MINGGU", tutup: "02:30", buka: "02:45" },
+  { name: "OREGON 03", days: "SENIN - MINGGU", tutup: "03:50", buka: "04:00" },
+  { name: "OREGON 06", days: "SENIN - MINGGU", tutup: "06:50", buka: "07:00" },
+  { name: "CALIFORNIA", days: "SENIN - MINGGU", tutup: "09:25", buka: "09:30" },
+  { name: "FLORIDA EVENING", days: "SENIN - MINGGU", tutup: "09:35", buka: "09:45" },
+  { name: "OREGON 09", days: "SENIN - MINGGU", tutup: "09:50", buka: "10:00" },
+  { name: "BANGKOK 0930", days: "SENIN - MINGGU", tutup: "09:15", buka: "09:30" },
+  { name: "NEWYORK EVENING", days: "SENIN - MINGGU", tutup: "10:25", buka: "10:35" },
+  { name: "KENTUCKY EVENING", days: "SENIN - MINGGU", tutup: "10:45", buka: "11:00" },
+  { name: "CAROLINA EVENING", days: "SENIN - MINGGU", tutup: "11:17", buka: "11:22" },
+  { name: "TOTO CAMBODIA LIVE", days: "SENIN - MINGGU", tutup: "10:45", buka: "11:00" },
+  { name: "CHELSEA 11", days: "SENIN - MINGGU", tutup: "11:00", buka: "11:15" },
+  { name: "OREGON 12", days: "SENIN - MINGGU", tutup: "12:50", buka: "13:00" },
+  { name: "BULLSEYE", days: "SENIN - MINGGU", tutup: "12:00", buka: "12:15" },
+  { name: "POIPET 12", days: "SENIN - MINGGU", tutup: "12:15", buka: "12:30" },
+  { name: "TOTOMACAU SIANG", days: "SENIN - MINGGU", tutup: "13:00", buka: "13:15" },
+  { name: "SYDNEY LOTTO", days: "SENIN - MINGGU", tutup: "13:49", buka: "14:05" },
+  { name: "BRUNEI 14", days: "SENIN - MINGGU", tutup: "14:30", buka: "14:45" },
+  { name: "CHELSEA 15", days: "SENIN - MINGGU", tutup: "15:00", buka: "15:15" },
+  { name: "POIPET 15", days: "SENIN - MINGGU", tutup: "15:15", buka: "15:30" },
+  { name: "TOTOMALI 1530", days: "SENIN - MINGGU", tutup: "15:15", buka: "15:30" },
+  { name: "TOTOMACAU SORE", days: "SENIN - MINGGU", tutup: "16:00", buka: "16:15" },
+  { name: "HUAHIN 1630", days: "SENIN - MINGGU", tutup: "16:15", buka: "16:30" },
+  { name: "KINGKONG 4D SORE", days: "SENIN - MINGGU", tutup: "17:00", buka: "17:15" },
+  { name: "SINGAPORE", days: "SELASA & JUMAT LIBUR", tutup: "17:30", buka: "17:45" },
+  { name: "MAGNUM4D", days: "RABU, SABTU, & MINGGU", tutup: "18:10", buka: "18:40" },
+  { name: "TOTOMACAU MALAM I", days: "SENIN - MINGGU", tutup: "19:00", buka: "19:15" },
+  { name: "CHELSEA 19", days: "SENIN - MINGGU", tutup: "19:00", buka: "19:15" },
+  { name: "POIPET 19", days: "SENIN - MINGGU", tutup: "19:30", buka: "19:45" },
+  { name: "PCSO", days: "MINGGU LIBUR", tutup: "19:50", buka: "20:10" },
+  { name: "TOTOMALI 2030", days: "SENIN - MINGGU", tutup: "20:15", buka: "20:30" },
+  { name: "HUAHIN 2100", days: "SENIN - MINGGU", tutup: "20:45", buka: "21:00" },
+  { name: "CHELSEA 21", days: "SENIN - MINGGU", tutup: "21:00", buka: "21:15" },
+  { name: "NEVADA", days: "SENIN - MINGGU", tutup: "21:15", buka: "21:30" },
+  { name: "BRUNEI 21", days: "SENIN - MINGGU", tutup: "21:30", buka: "21:45" },
+  { name: "TOTOMACAU MALAM II", days: "SENIN - MINGGU", tutup: "22:00", buka: "22:15" },
+  { name: "POIPET 22", days: "SENIN - MINGGU", tutup: "22:30", buka: "22:45" },
+  { name: "HONGKONG LOTTO", days: "SENIN - MINGGU", tutup: "22:59", buka: "23:15" },
+  { name: "TOTOMACAU MALAM III", days: "SENIN - MINGGU", tutup: "23:00", buka: "23:15" },
+  { name: "TOTOMALI 2330", days: "SENIN - MINGGU", tutup: "23:15", buka: "23:30" },
+  { name: "KINGKONG 4D MALAM", days: "SENIN - MINGGU", tutup: "23:30", buka: "23:45" },
+];
+
+// ============================================
+// STATE
+// ============================================
+let alarmQueue = [];
+let isAlarmShowing = false;
+let firedToday = new Set();
+let totalAlarmsToday = 0;
+let currentFilter = 'all';
+let hokiAlarmInterval = null;
+
+// ============================================
+// MATRIX RAIN
+// ============================================
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*';
+const columns = [];
+const fontSize = 13;
+
+function initMatrix() {
+  const cols = Math.floor(canvas.width / fontSize);
+  columns.length = 0;
+  for (let i = 0; i < cols; i++) {
+    columns.push(Math.random() * canvas.height / fontSize | 0);
+  }
+}
+initMatrix();
+window.addEventListener('resize', initMatrix);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(0,5,0,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = fontSize + 'px Share Tech Mono';
+
+  for (let i = 0; i < columns.length; i++) {
+    const char = chars[Math.random() * chars.length | 0];
+    const x = i * fontSize;
+    const y = columns[i] * fontSize;
+
+    if (Math.random() > 0.95) {
+      ctx.fillStyle = '#ffffff';
+    } else {
+      ctx.fillStyle = '#00ff41';
+    }
+    ctx.fillText(char, x, y);
+
+    if (y > canvas.height && Math.random() > 0.975) {
+      columns[i] = 0;
+    } else {
+      columns[i]++;
+    }
+  }
+}
+setInterval(drawMatrix, 50);
+
+// ============================================
+// TIME HELPERS
+// ============================================
+function getNow() {
+  const now = new Date();
+  return { h: now.getHours(), m: now.getMinutes(), s: now.getSeconds() };
+}
+
+function timeToMins(timeStr) {
+  if (!timeStr) return -1;
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function nowMins() {
+  const n = getNow();
+  return n.h * 60 + n.m;
+}
+
+function nowSecs() {
+  const n = getNow();
+  return n.h * 3600 + n.m * 60 + n.s;
+}
+
+function formatTime(h, m, s) {
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function formatCountdown(totalSecs) {
+  if (totalSecs < 0) totalSecs += 86400;
+  const h = Math.floor(totalSecs / 3600);
+  const m = Math.floor((totalSecs % 3600) / 60);
+  const s = totalSecs % 60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function getDayName(d) {
+  return ['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU'][d];
+}
+
+function getMonthName(m) {
+  return ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGS','SEP','OKT','NOV','DES'][m];
+}
+
+// ============================================
+// CARD STATUS
+// ============================================
+function getStatus(p) {
+  if (p.isHoki) return 'open';
+  const now = nowMins();
+  const tutupMins = timeToMins(p.tutup);
+  const bukaMins = timeToMins(p.buka);
+  // "buka" = betting open, "tutup" = bet close
+  // open = now < tutup
+  // soon = tutup - now <= 15 mins and tutup - now > 0
+  // closed = now >= tutup
+  const diff = tutupMins - now;
+  if (diff > 15) return 'open';
+  if (diff > 0) return 'soon';
+  // After close, consider it open again after buka time
+  const diffFromBuka = now - bukaMins;
+  if (diffFromBuka >= 0 && diffFromBuka < 60) return 'open';
+  return 'closed';
+}
+
+function getCountdownText(p) {
+  if (p.isHoki || !p.tutup) return '';
+  const now = nowMins();
+  const tutupMins = timeToMins(p.tutup);
+  const diff = tutupMins - now;
+  if (diff > 0 && diff <= 60) {
+    return `TUTUP DALAM ${diff} MENIT`;
+  }
+  if (diff <= 0 && diff > -30) {
+    return `SUDAH TUTUP ${Math.abs(diff)} MENIT LALU`;
+  }
+  return '';
+}
+
+// ============================================
+// RENDER CARDS
+// ============================================
+function renderCards() {
+  const grid = document.getElementById('cardsGrid');
+  const search = document.getElementById('searchInput').value.toUpperCase();
+  grid.innerHTML = '';
+
+  let openC = 0, closedC = 0, soonC = 0;
+
+  pasaranData.forEach((p, idx) => {
+    const status = getStatus(p);
+    if (status === 'open') openC++;
+    else if (status === 'closed') closedC++;
+    else if (status === 'soon') soonC++;
+
+    if (currentFilter !== 'all' && status !== currentFilter) return;
+    if (search && !p.name.includes(search)) return;
+
+    const card = document.createElement('div');
+    card.className = `card ${status}`;
+    card.dataset.idx = idx;
+
+    const statusLabel = status === 'open' ? 'BUKA' : status === 'soon' ? 'SEGERA TUTUP' : 'TUTUP';
+    const statusClass = status === 'open' ? 'status-open' : status === 'soon' ? 'status-soon' : 'status-closed';
+    const countdown = getCountdownText(p);
+
+    let timesHtml = '';
+    if (p.isHoki) {
+      timesHtml = `
+        <div style="margin-top:10px;">
+          <div class="hokidraw-badge">⚡ SETIAP JAM SEKALI</div>
+          <div style="font-size:9px; color: var(--gold2); letter-spacing:2px; margin-top:6px;">RESULT 24 KALI SEHARI</div>
+        </div>
+      `;
+    } else {
+      timesHtml = `
+        <div class="card-times">
+          <div class="time-block close-block">
+            <div class="time-block-label">BET CLOSE</div>
+            <div class="time-value">${p.tutup} <span style="font-size:10px; opacity:0.7;">WIB</span></div>
+          </div>
+          <div class="time-block">
+            <div class="time-block-label">BUKA LAGI</div>
+            <div class="time-value">${p.buka} <span style="font-size:10px; opacity:0.7;">WIB</span></div>
+          </div>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="card-corner"></div>
+      <div class="card-header">
+        <div class="card-name">${p.name}</div>
+        <div class="card-status ${statusClass}">${statusLabel}</div>
+      </div>
+      <div class="card-days"><span class="days-icon">◈</span> ${p.days}</div>
+      ${timesHtml}
+      ${countdown ? `<div class="card-countdown">⟳ ${countdown}</div>` : ''}
+      ${p.special ? `<div class="card-special">★ ${p.special}</div>` : ''}
+    `;
+
+    grid.appendChild(card);
+  });
+
+  document.getElementById('totalCount').textContent = pasaranData.length;
+  document.getElementById('openCount').textContent = openC;
+  document.getElementById('closedCount').textContent = closedC;
+  document.getElementById('statTotal').textContent = pasaranData.length;
+  document.getElementById('statOpen').textContent = openC;
+  document.getElementById('statClosed').textContent = closedC;
+  document.getElementById('statSoon').textContent = soonC;
+  document.getElementById('statAlarms').textContent = totalAlarmsToday;
+}
+
+// ============================================
+// FILTER & SEARCH
+// ============================================
+function filterCards(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function searchCards() {
+  renderCards();
+}
+
+// ============================================
+// CLOCK
+// ============================================
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('mainClock').textContent = `${h}:${m}:${s}`;
+
+  const day = getDayName(now.getDay());
+  const date = now.getDate();
+  const month = getMonthName(now.getMonth());
+  const year = now.getFullYear();
+  document.getElementById('mainDate').textContent = `${day}, ${date} ${month} ${year}`;
+
+  document.getElementById('alarmCurrentTime').textContent = `${h}:${m}:${s}`;
+}
+
+// ============================================
+// NEXT ALARM COUNTDOWN
+// ============================================
+function updateNextAlarm() {
+  const nowS = nowSecs();
+  const nowM = Math.floor(nowS / 60);
+
+  let minDiff = Infinity;
+  let nextName = '';
+  let nextTime = '';
+
+  pasaranData.forEach(p => {
+    if (p.isHoki) {
+      // Next hour mark
+      const nextHourSec = (Math.floor(nowS / 3600) + 1) * 3600;
+      const diff = nextHourSec - nowS;
+      if (diff < minDiff) {
+        minDiff = diff;
+        nextName = 'HOKIDRAW 5D';
+        nextTime = formatTime(Math.floor(nextHourSec/3600)%24, 0, 0).slice(0,5);
+      }
+      return;
+    }
+    if (!p.tutup) return;
+    const tutupMins = timeToMins(p.tutup);
+    let diffM = tutupMins - nowM;
+    if (diffM <= 0) diffM += 1440;
+    const diffS = diffM * 60 - (nowS % 60);
+    if (diffS < minDiff && diffS > 0) {
+      minDiff = diffS;
+      nextName = p.name;
+      nextTime = p.tutup;
+    }
+  });
+
+  if (nextName) {
+    document.getElementById('nextAlarmCountdown').textContent = formatCountdown(minDiff);
+    document.getElementById('nextAlarmInfo').textContent = `▸ ${nextName} | BET CLOSE ${nextTime} WIB`;
+  }
+}
+
+// ============================================
+// ALARM SYSTEM
+// ============================================
+function getTodayKey(name, time) {
+  const now = new Date();
+  return `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${name}-${time}`;
+}
+
+function checkAlarms() {
+  const nowM = nowMins();
+  const nowSec = new Date().getSeconds();
+  if (nowSec !== 0 && nowSec !== 1) return; // only fire at exact minute
+
+  pasaranData.forEach(p => {
+    if (p.isHoki) return; // handled separately
+    if (!p.tutup) return;
+
+    const tutupMins = timeToMins(p.tutup);
+    if (tutupMins === nowM) {
+      const key = getTodayKey(p.name, p.tutup);
+      if (!firedToday.has(key)) {
+        firedToday.add(key);
+        totalAlarmsToday++;
+        queueAlarm(p.name, p.tutup, p.buka);
+      }
+    }
+  });
+}
+
+function checkHokiAlarm() {
+  // HOKIDRAW: every hour on the dot
+  const now = new Date();
+  const m = now.getMinutes();
+  const s = now.getSeconds();
+  if (m === 0 && s <= 2) {
+    const key = getTodayKey('HOKIDRAW 5D', now.getHours() + ':00');
+    if (!firedToday.has(key)) {
+      firedToday.add(key);
+      totalAlarmsToday++;
+      const hh = String(now.getHours()).padStart(2,'0');
+      const nextH = String((now.getHours() + 1) % 24).padStart(2,'0');
+      queueAlarm('HOKIDRAW 5D', `${hh}:00`, `${nextH}:00`);
+    }
+  }
+}
+
+function queueAlarm(name, tutup, buka) {
+  alarmQueue.push({ name, tutup, buka });
+  updateQueueBadge();
+  if (!isAlarmShowing) showNextAlarm();
+}
+
+function showNextAlarm() {
+  if (alarmQueue.length === 0) {
+    isAlarmShowing = false;
+    return;
+  }
+  isAlarmShowing = true;
+  const alarm = alarmQueue[0];
+  document.getElementById('alarmMarketName').textContent = alarm.name;
+  document.getElementById('alarmCloseTime').textContent = alarm.tutup + ' WIB';
+  document.getElementById('alarmOpenTime').textContent = alarm.buka + ' WIB';
+  document.getElementById('alarmOverlay').classList.add('active');
+  updateQueueBadge();
+  playAlarmSound();
+}
+
+function dismissAlarm() {
+  alarmQueue.shift();
+  document.getElementById('alarmOverlay').classList.remove('active');
+  updateQueueBadge();
+  renderCards();
+  if (alarmQueue.length > 0) {
+    setTimeout(showNextAlarm, 500);
+  } else {
+    isAlarmShowing = false;
+  }
+}
+
+function updateQueueBadge() {
+  const badge = document.getElementById('queueBadge');
+  const count = alarmQueue.length;
+  document.getElementById('queueCount').textContent = count;
+  badge.style.display = count > 1 ? 'block' : 'none';
+}
+
+function playAlarmSound() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const ac = new AudioContext();
+    const beepPattern = [880, 0, 880, 0, 1760];
+    let time = ac.currentTime;
+    beepPattern.forEach((freq, i) => {
+      if (freq === 0) { time += 0.1; return; }
+      const osc = ac.createOscillator();
+      const gain = ac.createGain();
+      osc.connect(gain);
+      gain.connect(ac.destination);
+      osc.frequency.value = freq;
+      osc.type = 'square';
+      gain.gain.setValueAtTime(0.2, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+      osc.start(time);
+      osc.stop(time + 0.2);
+      time += 0.25;
+    });
+  } catch(e) {}
+}
+
+// ============================================
+// MAIN LOOP
+// ============================================
+function mainLoop() {
+  updateClock();
+  updateNextAlarm();
+  checkAlarms();
+  checkHokiAlarm();
+}
+
+// Render cards every 10s
+let lastRenderMin = -1;
+function renderLoop() {
+  const m = new Date().getMinutes();
+  if (m !== lastRenderMin) {
+    lastRenderMin = m;
+    renderCards();
+  }
+}
+
+// Initial render
+renderCards();
+
+// Start loops
+setInterval(mainLoop, 1000);
+setInterval(renderLoop, 5000);
+mainLoop();
+
+// TEST: You can remove this block - it's just for showing the modal works
+// setTimeout(() => queueAlarm('HONGKONG LOTTO', '22:59', '23:15'), 3000);
+</script>
+</body>
+</html>
