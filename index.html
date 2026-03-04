@@ -6,1649 +6,577 @@
 <title>CEK JADWAL TOGEL ALHACKER168</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --green: #00ff41;
-    --green2: #00cc33;
-    --green3: #003300;
-    --gold: #ffd700;
-    --gold2: #ffaa00;
-    --red: #ff0040;
-    --cyan: #00ffff;
-    --bg: #000500;
-    --panel: #020f02;
-    --border: #00ff4133;
-    --glow: 0 0 10px #00ff41, 0 0 20px #00ff4180, 0 0 40px #00ff4140;
-    --glow-gold: 0 0 10px #ffd700, 0 0 20px #ffd70080;
-    --glow-red: 0 0 10px #ff0040, 0 0 20px #ff004080, 0 0 40px #ff004040;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--green);
-    font-family: 'Share Tech Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-    cursor: default;
-  }
-
-  /* MATRIX RAIN CANVAS */
-  #matrix-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    opacity: 0.45;
-    pointer-events: none;
-  }
-
-  /* SCANLINES */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.15) 2px,
-      rgba(0,0,0,0.15) 4px
-    );
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  /* VIGNETTE */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.8) 100%);
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .wrapper {
-    position: relative;
-    z-index: 2;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  /* HEADER */
-  .header {
-    text-align: center;
-    padding: 30px 20px 20px;
-    position: relative;
-  }
-
-  .header-badge {
-    display: inline-block;
-    background: linear-gradient(90deg, transparent, var(--green3), transparent);
-    border-top: 1px solid var(--green);
-    border-bottom: 1px solid var(--green);
-    padding: 4px 40px;
-    font-size: 11px;
-    letter-spacing: 8px;
-    color: var(--green2);
-    margin-bottom: 10px;
-    animation: pulse-border 2s infinite;
-  }
-
-  .header-title {
-    font-family: 'Orbitron', monospace;
-    font-size: clamp(20px, 4vw, 42px);
-    font-weight: 900;
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-    letter-spacing: 4px;
-    line-height: 1.2;
-    animation: flicker 4s infinite;
-  }
-
-  .header-sub {
-    font-family: 'VT323', monospace;
-    font-size: 22px;
-    color: var(--green);
-    letter-spacing: 6px;
-    margin-top: 6px;
-    text-shadow: var(--glow);
-  }
-
-  .header-line {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--green), var(--gold), var(--green), transparent);
-    margin: 16px 0;
-    animation: scan-line 3s linear infinite;
-  }
-
-  /* CLOCK */
-  .clock-panel {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    margin: 10px 0 20px;
-    flex-wrap: wrap;
-  }
-
-  .clock-box {
-    background: var(--panel);
-    border: 1px solid var(--green);
-    border-radius: 4px;
-    padding: 12px 24px;
-    text-align: center;
-    box-shadow: var(--glow), inset 0 0 20px rgba(0,255,65,0.05);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .clock-box::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(transparent 330deg, rgba(0,255,65,0.1) 360deg);
-    animation: rotate 4s linear infinite;
-  }
-
-  .clock-label {
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--green2);
-    margin-bottom: 4px;
-  }
-
-  .clock-time {
-    font-family: 'Orbitron', monospace;
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--green);
-    text-shadow: var(--glow);
-    letter-spacing: 4px;
-  }
-
-  .clock-date {
-    font-size: 11px;
-    color: var(--green2);
-    letter-spacing: 2px;
-    margin-top: 2px;
-  }
-
-  /* STATUS BAR */
-  .status-bar {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--green);
-    padding: 8px 16px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    font-size: 11px;
-    flex-wrap: wrap;
-  }
-
-  .status-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: var(--glow);
-    animation: blink 1s infinite;
-    flex-shrink: 0;
-  }
-
-  .status-text { color: var(--green2); letter-spacing: 2px; }
-
-  .next-alarm-box {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .next-alarm-label {
-    color: var(--green2);
-    font-size: 10px;
-    letter-spacing: 3px;
-  }
-
-  .next-alarm-name {
-    color: var(--gold);
-    font-size: 12px;
-    font-weight: bold;
-    text-shadow: var(--glow-gold);
-    letter-spacing: 2px;
-  }
-
-  .next-alarm-time {
-    color: var(--cyan);
-    font-family: 'Orbitron', monospace;
-    font-size: 14px;
-    text-shadow: 0 0 10px var(--cyan);
-  }
-
-  .countdown-box {
-    color: var(--red);
-    font-family: 'Orbitron', monospace;
-    font-size: 13px;
-    text-shadow: var(--glow-red);
-    animation: pulse-red 1s infinite;
-  }
-
-  /* FILTER BAR */
-  .filter-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .filter-label {
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--green2);
-    margin-right: 4px;
-  }
-
-  .filter-btn {
-    background: transparent;
-    border: 1px solid var(--green);
-    color: var(--green);
-    padding: 5px 14px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .filter-btn:hover, .filter-btn.active {
-    background: var(--green);
-    color: #000;
-    box-shadow: var(--glow);
-  }
-
-  /* SEARCH */
-  .search-box {
-    margin-left: auto;
-    position: relative;
-  }
-
-  .search-input {
-    background: var(--panel);
-    border: 1px solid var(--green);
-    color: var(--green);
-    padding: 5px 14px 5px 30px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    outline: none;
-    letter-spacing: 2px;
-    width: 200px;
-  }
-
-  .search-input::placeholder { color: var(--green3); }
-  .search-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--green2);
-    font-size: 12px;
-  }
-
-  /* GRID */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
-  }
-
-  /* CARD */
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 14px 16px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-    cursor: pointer;
-  }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: var(--green);
-    box-shadow: var(--glow);
-    transition: all 0.3s;
-  }
-
-  .card:hover {
-    border-color: var(--green);
-    box-shadow: var(--glow), inset 0 0 20px rgba(0,255,65,0.05);
-    transform: translateY(-2px);
-  }
-
-  .card:hover::before { width: 100%; opacity: 0.03; }
-
-  .card.open {
-    border-color: var(--green);
-    box-shadow: var(--glow);
-  }
-
-  .card.open::before { background: var(--green); }
-
-  .card.closed {
-    border-color: rgba(255,0,64,0.3);
-  }
-
-  .card.closed::before { background: var(--red); box-shadow: var(--glow-red); }
-
-  .card.soon {
-    border-color: var(--gold);
-    animation: pulse-card 1.5s infinite;
-  }
-
-  .card.soon::before { background: var(--gold); box-shadow: var(--glow-gold); }
-
-  .card-corner {
-    position: absolute;
-    top: 0; right: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 24px 24px 0;
-    border-color: transparent var(--green) transparent transparent;
-    transition: all 0.3s;
-  }
-
-  .card.closed .card-corner { border-color: transparent var(--red) transparent transparent; }
-  .card.soon .card-corner { border-color: transparent var(--gold) transparent transparent; }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
-
-  .card-name {
-    font-family: 'Orbitron', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-    letter-spacing: 1px;
-    line-height: 1.3;
-    flex: 1;
-    margin-right: 10px;
-  }
-
-  .card-status {
-    font-size: 9px;
-    padding: 3px 8px;
-    letter-spacing: 2px;
-    border-radius: 1px;
-    font-weight: bold;
-    white-space: nowrap;
-  }
-
-  .status-open { background: rgba(0,255,65,0.15); color: var(--green); border: 1px solid var(--green); text-shadow: var(--glow); }
-  .status-closed { background: rgba(255,0,64,0.15); color: var(--red); border: 1px solid var(--red); text-shadow: var(--glow-red); }
-  .status-soon { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid var(--gold); animation: blink 0.8s infinite; }
-
-  .card-days {
-    font-size: 9px;
-    color: var(--green2);
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .days-icon { opacity: 0.6; }
-
-  .card-times {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
-
-  .time-block {
-    background: rgba(0,255,65,0.04);
-    border: 1px solid rgba(0,255,65,0.15);
-    padding: 6px 8px;
-    border-radius: 1px;
-  }
-
-  .time-block.close-block {
-    background: rgba(255,0,64,0.04);
-    border-color: rgba(255,0,64,0.2);
-  }
-
-  .time-block-label {
-    font-size: 8px;
-    color: var(--green2);
-    letter-spacing: 3px;
-    margin-bottom: 3px;
-  }
-
-  .time-block.close-block .time-block-label { color: rgba(255,0,64,0.7); }
-
-  .time-value {
-    font-family: 'Orbitron', monospace;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--green);
-    text-shadow: var(--glow);
-    letter-spacing: 2px;
-  }
-
-  .time-block.close-block .time-value { color: var(--red); text-shadow: var(--glow-red); }
-
-  .card-countdown {
-    margin-top: 8px;
-    font-size: 10px;
-    color: var(--gold);
-    letter-spacing: 2px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .card-special {
-    margin-top: 6px;
-    font-size: 9px;
-    color: rgba(255,215,0,0.6);
-    letter-spacing: 2px;
-    padding: 3px 6px;
-    background: rgba(255,215,0,0.05);
-    border-left: 2px solid var(--gold);
-  }
-
-  .hokidraw-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05));
-    border: 1px solid var(--gold);
-    padding: 2px 10px;
-    font-size: 9px;
-    color: var(--gold);
-    letter-spacing: 3px;
-    animation: pulse-border 1.5s infinite;
-  }
-
-  /* ALARM MODAL */
-  .alarm-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
-    z-index: 9999;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    animation: overlay-in 0.3s ease;
-  }
-
-  .alarm-overlay.active { display: flex; }
-
-  .alarm-modal {
-    background: #000;
-    border: 2px solid var(--red);
-    max-width: 480px;
-    width: 90%;
-    position: relative;
-    box-shadow: var(--glow-red), 0 0 80px rgba(255,0,64,0.3);
-    animation: modal-shake 0.5s ease, modal-glow 1.5s infinite alternate;
-    overflow: hidden;
-  }
-
-  .alarm-modal::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: repeating-linear-gradient(
-      0deg, transparent, transparent 2px,
-      rgba(255,0,64,0.03) 2px, rgba(255,0,64,0.03) 4px
-    );
-    pointer-events: none;
-  }
-
-  .alarm-header {
-    background: linear-gradient(90deg, rgba(255,0,64,0.3), rgba(255,0,64,0.1));
-    border-bottom: 1px solid var(--red);
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .alarm-title-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .alarm-icon {
-    font-size: 24px;
-    animation: spin 1s linear infinite;
-  }
-
-  .alarm-header-text {
-    font-family: 'Orbitron', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--red);
-    text-shadow: var(--glow-red);
-    letter-spacing: 4px;
-  }
-
-  .alarm-time-display {
-    font-family: 'Orbitron', monospace;
-    font-size: 14px;
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-  }
-
-  .alarm-body {
-    padding: 30px 24px;
-    text-align: center;
-  }
-
-  .alarm-market-name {
-    font-family: 'Orbitron', monospace;
-    font-size: clamp(18px, 4vw, 28px);
-    font-weight: 900;
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-    letter-spacing: 3px;
-    margin-bottom: 10px;
-    animation: flicker 0.5s infinite;
-  }
-
-  .alarm-betclose-text {
-    font-family: 'VT323', monospace;
-    font-size: 48px;
-    color: var(--red);
-    text-shadow: var(--glow-red);
-    letter-spacing: 6px;
-    animation: pulse-red 0.8s infinite;
-    margin: 10px 0;
-    line-height: 1;
-  }
-
-  .alarm-sub-text {
-    font-size: 11px;
-    color: var(--green2);
-    letter-spacing: 4px;
-    margin-bottom: 20px;
-  }
-
-  .alarm-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .alarm-detail-box {
-    background: rgba(255,0,64,0.05);
-    border: 1px solid rgba(255,0,64,0.2);
-    padding: 10px;
-  }
-
-  .alarm-detail-label {
-    font-size: 9px;
-    color: rgba(255,0,64,0.6);
-    letter-spacing: 3px;
-    margin-bottom: 4px;
-  }
-
-  .alarm-detail-value {
-    font-family: 'Orbitron', monospace;
-    font-size: 16px;
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-  }
-
-  .alarm-ok-btn {
-    background: linear-gradient(90deg, rgba(255,0,64,0.2), rgba(255,0,64,0.3), rgba(255,0,64,0.2));
-    border: 2px solid var(--red);
-    color: var(--red);
-    font-family: 'Orbitron', monospace;
-    font-size: 16px;
-    font-weight: 700;
-    padding: 14px 60px;
-    letter-spacing: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-shadow: var(--glow-red);
-    position: relative;
-    overflow: hidden;
-    animation: btn-pulse 1.5s infinite;
-  }
-
-  .alarm-ok-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,0,64,0.3), transparent);
-    transition: left 0.3s;
-  }
-
-  .alarm-ok-btn:hover {
-    background: var(--red);
-    color: #000;
-    box-shadow: var(--glow-red);
-    text-shadow: none;
-  }
-
-  .alarm-ok-btn:hover::before { left: 100%; }
-
-  /* FOOTER */
-  .footer {
-    text-align: center;
-    padding: 30px;
-    margin-top: 20px;
-    border-top: 1px solid var(--border);
-  }
-
-  .footer-text {
-    font-size: 10px;
-    color: rgba(0,255,65,0.3);
-    letter-spacing: 4px;
-  }
-
-  .footer-brand {
-    font-family: 'Orbitron', monospace;
-    font-size: 16px;
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-    letter-spacing: 6px;
-    margin-top: 6px;
-  }
-
-  /* COUNTER STATS */
-  .stats-bar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-
-  .stat-box {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 10px 16px;
-    flex: 1;
-    min-width: 120px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-box::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    height: 2px;
-    width: 100%;
-    background: var(--green);
-    box-shadow: var(--glow);
-    animation: scan 3s ease-in-out infinite;
-  }
-
-  .stat-value {
-    font-family: 'Orbitron', monospace;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-  }
-
-  .stat-label {
-    font-size: 9px;
-    color: var(--green2);
-    letter-spacing: 3px;
-    margin-top: 2px;
-  }
-
-  /* ANIMATIONS */
-  @keyframes flicker {
-    0%, 95%, 100% { opacity: 1; }
-    96% { opacity: 0.8; }
-    97% { opacity: 0.3; }
-    98% { opacity: 1; }
-    99% { opacity: 0.7; }
-  }
-
-  @keyframes blink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
-  }
-
-  @keyframes pulse-border {
-    0%, 100% { box-shadow: 0 0 5px rgba(0,255,65,0.3); }
-    50% { box-shadow: 0 0 15px rgba(0,255,65,0.6); }
-  }
-
-  @keyframes pulse-red {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-
-  @keyframes pulse-card {
-    0%, 100% { box-shadow: 0 0 5px rgba(255,215,0,0.3); }
-    50% { box-shadow: 0 0 20px rgba(255,215,0,0.6); }
-  }
-
-  @keyframes scan-line {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-
-  @keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  @keyframes scan {
-    0%, 100% { transform: translateX(-100%); }
-    50% { transform: translateX(100%); }
-  }
-
-  @keyframes overlay-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes modal-shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-  }
-
-  @keyframes modal-glow {
-    from { box-shadow: var(--glow-red), 0 0 40px rgba(255,0,64,0.2); }
-    to { box-shadow: var(--glow-red), 0 0 80px rgba(255,0,64,0.5); }
-  }
-
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes btn-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-  }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--green3); border: 1px solid var(--green); }
-  ::-webkit-scrollbar-thumb:hover { background: var(--green); }
-
-  /* RESPONSIVE */
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr 1fr; }
-    .stats-bar .stat-box { min-width: 80px; }
-    .filter-bar { justify-content: center; }
-    .search-box { margin-left: 0; width: 100%; }
-    .search-input { width: 100%; }
-    .next-alarm-box { margin-left: 0; }
-  }
-
-  @media (max-width: 400px) {
-    .grid { grid-template-columns: 1fr; }
-  }
-
-  .glitch-text {
-    animation: glitch 5s infinite;
-  }
-
-  @keyframes glitch {
-    0%, 90%, 100% { text-shadow: var(--glow-gold); transform: none; }
-    91% { text-shadow: 2px 0 var(--red), -2px 0 var(--cyan); transform: translateX(2px); }
-    92% { text-shadow: -2px 0 var(--red), 2px 0 var(--cyan); transform: translateX(-2px); }
-    93% { text-shadow: var(--glow-gold); transform: none; }
-  }
-
-  .terminal-cursor::after {
-    content: '█';
-    animation: blink 0.7s infinite;
-    color: var(--green);
-  }
-
-  .alarm-queue-badge {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--panel);
-    border: 1px solid var(--gold);
-    padding: 6px 14px;
-    font-size: 10px;
-    color: var(--gold);
-    letter-spacing: 2px;
-    z-index: 100;
-    box-shadow: var(--glow-gold);
-    display: none;
-  }
+:root {
+  --g:#00ff41;--g2:#00cc33;--g3:#001a00;
+  --gold:#ffd700;--gold2:#ffaa00;
+  --red:#ff0040;--cyan:#00ffff;
+  --bg:#000800;--panel:#010d01;
+  --glow:0 0 8px #00ff41,0 0 20px #00ff4166;
+  --glow-gold:0 0 8px #ffd700,0 0 20px #ffd70066;
+  --glow-red:0 0 8px #ff0040,0 0 25px #ff004077;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--g);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;cursor:default}
+
+/* MATRIX */
+#mc{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* SCANLINES */
+#sc{position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.1) 3px,rgba(0,0,0,.1) 4px);
+  z-index:1;pointer-events:none}
+
+/* APP */
+#app{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:16px}
+
+/* HEADER */
+.hdr{text-align:center;padding:24px 0 14px}
+.hbdg{display:inline-block;border-top:1px solid var(--g);border-bottom:1px solid var(--g);
+  padding:3px 30px;font-size:10px;letter-spacing:7px;color:var(--g2);margin-bottom:8px}
+.ht1{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(20px,4vw,42px);
+  color:var(--gold);text-shadow:var(--glow-gold);letter-spacing:4px;animation:flk 6s infinite}
+.ht2{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(16px,3vw,34px);
+  color:var(--g);text-shadow:var(--glow);letter-spacing:4px;margin-top:4px}
+.hsub{font-family:'VT323',monospace;font-size:20px;color:var(--g2);letter-spacing:5px;margin-top:5px}
+.hln{height:1px;margin:12px 0;background:linear-gradient(90deg,transparent,var(--g),var(--gold),var(--g),transparent)}
+
+/* CLOCK */
+.crow{display:flex;justify-content:center;gap:18px;margin-bottom:14px;flex-wrap:wrap}
+.cbox{background:var(--panel);border:1px solid var(--g);padding:11px 20px;text-align:center;box-shadow:var(--glow)}
+.clbl{font-size:9px;letter-spacing:4px;color:var(--g2);margin-bottom:3px}
+.cval{font-family:'Orbitron',monospace;font-size:28px;font-weight:700;color:var(--g);text-shadow:var(--glow);letter-spacing:3px}
+.csub{font-size:10px;color:var(--g2);letter-spacing:2px;margin-top:2px}
+
+/* STATUS BAR */
+.sbar{background:var(--panel);border:1px solid #00ff4120;border-left:3px solid var(--g);
+  padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:12px;font-size:10px;flex-wrap:wrap}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:var(--glow);animation:blk 1s infinite;flex-shrink:0}
+.stxt{color:var(--g2);letter-spacing:2px}
+.xbtn{border:1px solid var(--gold);background:rgba(255,215,0,.07);color:var(--gold);
+  font-family:'Share Tech Mono',monospace;font-size:9px;padding:4px 10px;letter-spacing:2px;cursor:pointer}
+.xbtn:hover{background:rgba(255,215,0,.18)}
+.xbtn.ok{border-color:var(--g);background:rgba(0,255,65,.06);color:var(--g);cursor:default}
+.xbtn.cy{border-color:var(--cyan);background:rgba(0,255,255,.06);color:var(--cyan)}
+
+/* STATS */
+.stats{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.stat{background:var(--panel);border:1px solid #00ff4118;padding:9px 12px;flex:1;min-width:90px;text-align:center}
+.sv{font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--gold);text-shadow:var(--glow-gold)}
+.sl{font-size:8px;color:var(--g2);letter-spacing:3px;margin-top:2px}
+
+/* FILTER */
+.fbar{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.flbl{font-size:9px;letter-spacing:3px;color:var(--g2)}
+.fbtn{background:transparent;border:1px solid var(--g);color:var(--g);
+  padding:4px 11px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer}
+.fbtn:hover,.fbtn.on{background:var(--g);color:#000;box-shadow:var(--glow)}
+.sinp{background:var(--panel);border:1px solid var(--g);color:var(--g);
+  padding:4px 10px;font-family:'Share Tech Mono',monospace;font-size:11px;
+  outline:none;letter-spacing:2px;width:175px;margin-left:auto}
+.sinp::placeholder{color:#002200}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:10px}
+
+/* CARD */
+.card{background:var(--panel);border:1px solid #00ff4120;padding:11px 13px;position:relative;overflow:hidden;transition:all .25s}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--g);box-shadow:var(--glow)}
+.card.is-open:hover{border-color:var(--g);box-shadow:var(--glow);transform:translateY(-2px)}
+.card.is-closed{border-color:#ff004030}
+.card.is-closed::before{background:var(--red);box-shadow:var(--glow-red)}
+.card.is-soon{border-color:var(--gold);animation:pgold 1.5s infinite}
+.card.is-soon::before{background:var(--gold);box-shadow:var(--glow-gold)}
+.ccnr{position:absolute;top:0;right:0;border-style:solid;border-width:0 18px 18px 0;border-color:transparent var(--g) transparent transparent}
+.card.is-closed .ccnr{border-color:transparent var(--red) transparent transparent}
+.card.is-soon .ccnr{border-color:transparent var(--gold) transparent transparent}
+.chd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px}
+.cn{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--gold);
+  text-shadow:var(--glow-gold);letter-spacing:1px;line-height:1.3;flex:1;margin-right:7px}
+.cbdg{font-size:8px;padding:2px 7px;letter-spacing:2px;white-space:nowrap;font-weight:bold;border-radius:1px}
+.bo{background:rgba(0,255,65,.09);color:var(--g);border:1px solid var(--g)}
+.bc{background:rgba(255,0,64,.09);color:var(--red);border:1px solid var(--red)}
+.bs{background:rgba(255,215,0,.09);color:var(--gold);border:1px solid var(--gold);animation:blk .8s infinite}
+.cday{font-size:9px;color:var(--g2);letter-spacing:2px;margin-bottom:7px}
+.ctimes{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.ct{background:rgba(0,255,65,.03);border:1px solid rgba(0,255,65,.1);padding:5px 7px}
+.ct.r{background:rgba(255,0,64,.03);border-color:rgba(255,0,64,.18)}
+.ctl{font-size:7px;color:var(--g2);letter-spacing:3px;margin-bottom:2px}
+.ct.r .ctl{color:rgba(255,0,64,.55)}
+.ctv{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:var(--g);text-shadow:var(--glow);letter-spacing:1px}
+.ct.r .ctv{color:var(--red);text-shadow:var(--glow-red)}
+.ccd{margin-top:6px;font-size:9px;color:var(--gold);letter-spacing:2px}
+.hbdg2{display:inline-flex;align-items:center;gap:5px;background:rgba(255,215,0,.06);
+  border:1px solid var(--gold);padding:3px 10px;font-size:9px;color:var(--gold);letter-spacing:3px;margin-top:8px}
+
+/* MODAL */
+#ovl{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.93);
+  z-index:9999;display:none;justify-content:center;align-items:center}
+#ovl.on{display:flex}
+.mdl{background:#000;border:2px solid var(--red);max-width:455px;width:92%;
+  position:relative;overflow:hidden;box-shadow:var(--glow-red),0 0 60px rgba(255,0,64,.22);animation:shk .35s ease}
+.mdl::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,0,64,.02) 2px,rgba(255,0,64,.02) 4px);pointer-events:none}
+.mh{background:linear-gradient(90deg,rgba(255,0,64,.22),rgba(255,0,64,.06));
+  border-bottom:1px solid var(--red);padding:11px 17px;display:flex;justify-content:space-between;align-items:center}
+.mhtxt{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--red);text-shadow:var(--glow-red);letter-spacing:4px}
+.mhtime{font-family:'Orbitron',monospace;font-size:12px;color:var(--gold)}
+.mb{padding:26px 20px;text-align:center}
+.mmkt{font-family:'Orbitron',monospace;font-size:clamp(15px,4vw,25px);font-weight:900;
+  color:var(--gold);text-shadow:var(--glow-gold);letter-spacing:3px;animation:flk .55s infinite}
+.mbc{font-family:'VT323',monospace;font-size:50px;color:var(--red);text-shadow:var(--glow-red);
+  letter-spacing:6px;line-height:1.05;margin:7px 0;animation:prd .7s infinite}
+.msub{font-size:10px;color:var(--g2);letter-spacing:3px;margin-bottom:16px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:20px}
+.mbox{background:rgba(255,0,64,.05);border:1px solid rgba(255,0,64,.18);padding:9px}
+.mbl{font-size:8px;color:rgba(255,0,64,.55);letter-spacing:3px;margin-bottom:2px}
+.mbv{font-family:'Orbitron',monospace;font-size:15px;color:var(--gold);text-shadow:var(--glow-gold)}
+.mok{background:linear-gradient(90deg,rgba(255,0,64,.13),rgba(255,0,64,.22),rgba(255,0,64,.13));
+  border:2px solid var(--red);color:var(--red);font-family:'Orbitron',monospace;
+  font-size:14px;font-weight:700;padding:12px 52px;letter-spacing:6px;cursor:pointer;
+  text-shadow:var(--glow-red);transition:all .18s;animation:pbtn 1.5s infinite}
+.mok:hover{background:var(--red);color:#000;box-shadow:var(--glow-red);text-shadow:none}
+
+/* QUEUE */
+#qbdg{position:fixed;top:14px;right:14px;background:var(--panel);border:1px solid var(--gold);
+  padding:5px 11px;font-size:9px;color:var(--gold);letter-spacing:2px;z-index:200;box-shadow:var(--glow-gold);display:none}
+
+/* FOOTER */
+.foot{text-align:center;padding:26px;margin-top:14px;border-top:1px solid #00ff4118}
+.fl{font-size:9px;color:rgba(0,255,65,.28);letter-spacing:4px}
+.fb{font-family:'Orbitron',monospace;font-size:15px;color:var(--gold);text-shadow:var(--glow-gold);letter-spacing:6px;margin-top:5px}
+
+/* ANIMATIONS */
+@keyframes flk{0%,91%,100%{opacity:1}92%{opacity:.35}94%{opacity:1}96%{opacity:.6}98%{opacity:1}}
+@keyframes blk{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes pgold{0%,100%{box-shadow:0 0 4px rgba(255,215,0,.2)}50%{box-shadow:0 0 16px rgba(255,215,0,.55)}}
+@keyframes prd{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes shk{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes pbtn{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#002200;border:1px solid var(--g)}
+
+@media(max-width:520px){.grid{grid-template-columns:1fr 1fr}.sinp{width:100%;margin-left:0}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<canvas id="matrix-canvas"></canvas>
+
+<canvas id="mc"></canvas>
+<div id="sc"></div>
 
 <!-- ALARM MODAL -->
-<div class="alarm-overlay" id="alarmOverlay">
-  <div class="alarm-modal">
-    <div class="alarm-header">
-      <div class="alarm-title-row">
-        <span class="alarm-icon">⚠</span>
-        <div>
-          <div class="alarm-header-text">!! BET CLOSE ALERT !!</div>
-        </div>
+<div id="ovl">
+  <div class="mdl">
+    <div class="mh">
+      <div>
+        <div style="font-size:9px;color:rgba(255,0,64,.55);letter-spacing:4px;margin-bottom:2px">⚠ ALHACKER168</div>
+        <div class="mhtxt">!! BET CLOSE ALERT !!</div>
       </div>
-      <div class="alarm-time-display" id="alarmCurrentTime">--:--:--</div>
+      <div class="mhtime" id="aTime">--:--:--</div>
     </div>
-    <div class="alarm-body">
-      <div class="alarm-market-name" id="alarmMarketName">MARKET NAME</div>
-      <div class="alarm-betclose-text">BET CLOSE</div>
-      <div class="alarm-sub-text">PASARAN INI SUDAH TUTUP &nbsp;|&nbsp; SEGERA PASANG SEBELUM CLOSE</div>
-      <div class="alarm-details">
-        <div class="alarm-detail-box">
-          <div class="alarm-detail-label">TUTUP JAM</div>
-          <div class="alarm-detail-value" id="alarmCloseTime">--:--</div>
-        </div>
-        <div class="alarm-detail-box">
-          <div class="alarm-detail-label">BUKA JAM</div>
-          <div class="alarm-detail-value" id="alarmOpenTime">--:--</div>
-        </div>
+    <div class="mb">
+      <div class="mmkt" id="aMkt">---</div>
+      <div class="mbc">BET CLOSE</div>
+      <div class="msub">▸ PASARAN INI SUDAH TUTUP ◂</div>
+      <div class="mgrid">
+        <div class="mbox"><div class="mbl">TUTUP JAM</div><div class="mbv" id="aTutup">--:--</div></div>
+        <div class="mbox"><div class="mbl">BUKA LAGI</div><div class="mbv" id="aBuka">--:--</div></div>
       </div>
-      <button class="alarm-ok-btn" onclick="dismissAlarm()">[ OK ]</button>
+      <button class="mok" onclick="dismissAlarm()">[ OK ]</button>
     </div>
   </div>
 </div>
 
-<div class="alarm-queue-badge" id="queueBadge">▶ ANTRIAN ALARM: <span id="queueCount">0</span></div>
+<div id="qbdg">▶ ANTRIAN: <span id="qnum">0</span> ALARM</div>
 
-<div class="wrapper">
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-badge">▓▓▓ ALHACKER168 SYSTEM ▓▓▓</div>
-    <div class="header-title glitch-text">CEK JADWAL TOGEL</div>
-    <div class="header-title" style="color: var(--green); font-size: clamp(18px,3.5vw,36px); margin-top:4px;">ALHACKER168</div>
-    <div class="header-sub">[ REAL-TIME BET CLOSE ALARM SYSTEM ] <span class="terminal-cursor"></span></div>
-    <div class="header-line"></div>
+<div id="app">
+  <div class="hdr">
+    <div class="hbdg">▓▓ ALHACKER168 SYSTEM ▓▓</div>
+    <div class="ht1">CEK JADWAL TOGEL</div>
+    <div class="ht2">ALHACKER168</div>
+    <div class="hsub">[ REAL-TIME BET CLOSE ALARM ]</div>
+    <div class="hln"></div>
   </div>
 
-  <!-- CLOCK -->
-  <div class="clock-panel">
-    <div class="clock-box">
-      <div class="clock-label">▸ WAKTU WIB</div>
-      <div class="clock-time" id="mainClock">00:00:00</div>
-      <div class="clock-date" id="mainDate">---</div>
+  <div class="crow">
+    <div class="cbox">
+      <div class="clbl">▸ WAKTU WIB</div>
+      <div class="cval" id="clkM">00:00:00</div>
+      <div class="csub" id="clkD">---</div>
     </div>
-    <div class="clock-box" style="border-color: var(--gold); box-shadow: var(--glow-gold), inset 0 0 20px rgba(255,215,0,0.03);">
-      <div class="clock-label" style="color: var(--gold2);">▸ NEXT ALARM IN</div>
-      <div class="clock-time" id="nextAlarmCountdown" style="color: var(--gold); text-shadow: var(--glow-gold); font-size: 26px;">--:--:--</div>
-      <div class="clock-date" id="nextAlarmInfo" style="color: var(--gold2);">CALCULATING...</div>
-    </div>
-  </div>
-
-  <!-- STATUS -->
-  <div class="status-bar">
-    <div class="status-dot"></div>
-    <div class="status-text">ALARM SYSTEM: <span style="color: var(--green);">AKTIF</span></div>
-    <div class="status-text">|</div>
-    <div class="status-text">TOTAL PASARAN: <span style="color: var(--gold);" id="totalCount">--</span></div>
-    <div class="status-text">|</div>
-    <div class="status-text">BUKA: <span style="color: var(--green);" id="openCount">--</span></div>
-    <div class="status-text">|</div>
-    <div class="status-text">TUTUP: <span style="color: var(--red);" id="closedCount">--</span></div>
-    <button id="notifBtn" onclick="enableNotif()" style="margin-left:auto; background:rgba(255,215,0,0.1); border:1px solid var(--gold); color:var(--gold); font-family:'Share Tech Mono',monospace; font-size:10px; padding:4px 12px; letter-spacing:2px; cursor:pointer;">🔔 AKTIFKAN NOTIFIKASI TAB LAIN</button>
-    <button onclick="unlockAudio(); playAlarmSound(false);" style="background:rgba(0,255,65,0.08); border:1px solid var(--green); color:var(--green); font-family:'Share Tech Mono',monospace; font-size:10px; padding:4px 12px; letter-spacing:2px; cursor:pointer;" title="Test suara alarm">🔊 TEST SUARA</button>
-    <button onclick="unlockAudio(); playAlarmSound(true);" style="background:rgba(255,215,0,0.08); border:1px solid var(--gold); color:var(--gold); font-family:'Share Tech Mono',monospace; font-size:10px; padding:4px 12px; letter-spacing:2px; cursor:pointer;" title="Test suara HOKIDRAW">⚡ TEST HOKIDRAW</button>
-  </div>
-
-  <!-- STATS -->
-  <div class="stats-bar">
-    <div class="stat-box">
-      <div class="stat-value" id="statTotal">0</div>
-      <div class="stat-label">TOTAL PASARAN</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="statOpen" style="color: var(--green); text-shadow: var(--glow);">0</div>
-      <div class="stat-label">SEDANG BUKA</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="statClosed" style="color: var(--red); text-shadow: var(--glow-red);">0</div>
-      <div class="stat-label">SUDAH TUTUP</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="statSoon" style="color: var(--gold); text-shadow: var(--glow-gold);">0</div>
-      <div class="stat-label">SEGERA TUTUP</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-value" id="statAlarms" style="color: var(--cyan); text-shadow: 0 0 10px var(--cyan);">0</div>
-      <div class="stat-label">ALARM HARI INI</div>
+    <div class="cbox" style="border-color:var(--gold);box-shadow:var(--glow-gold)">
+      <div class="clbl" style="color:var(--gold2)">▸ NEXT BET CLOSE</div>
+      <div class="cval" id="clkN" style="color:var(--gold);text-shadow:var(--glow-gold);font-size:23px">--:--:--</div>
+      <div class="csub" id="clkNI" style="color:var(--gold2)">MENGHITUNG...</div>
     </div>
   </div>
 
-  <!-- FILTER -->
-  <div class="filter-bar">
-    <span class="filter-label">▸ FILTER:</span>
-    <button class="filter-btn active" onclick="filterCards('all', this)">SEMUA</button>
-    <button class="filter-btn" onclick="filterCards('open', this)">BUKA</button>
-    <button class="filter-btn" onclick="filterCards('closed', this)">TUTUP</button>
-    <button class="filter-btn" onclick="filterCards('soon', this)">SEGERA TUTUP</button>
-    <div class="search-box">
-      <span class="search-icon">⌕</span>
-      <input type="text" class="search-input" id="searchInput" placeholder="CARI PASARAN..." oninput="searchCards()">
-    </div>
+  <div class="sbar">
+    <div class="sdot"></div>
+    <span class="stxt">SISTEM: <span style="color:var(--g)">AKTIF</span></span>
+    <span class="stxt">|</span>
+    <span class="stxt">BUKA: <span style="color:var(--g)" id="sO">-</span></span>
+    <span class="stxt">|</span>
+    <span class="stxt">TUTUP: <span style="color:var(--red)" id="sC">-</span></span>
+    <span class="stxt">|</span>
+    <span class="stxt">ALARM: <span style="color:var(--cyan)" id="sA">0</span></span>
+    <button class="xbtn" id="notifBtn" onclick="doNotif()">🔔 AKTIFKAN NOTIFIKASI</button>
+    <button class="xbtn cy" onclick="testSuara(false)">🔊 TEST SUARA</button>
+    <button class="xbtn" style="border-color:var(--gold);color:var(--gold)" onclick="testSuara(true)">⚡ TEST HOKI</button>
   </div>
 
-  <!-- CARDS GRID -->
-  <div class="grid" id="cardsGrid"></div>
+  <div class="stats">
+    <div class="stat"><div class="sv" id="stT">0</div><div class="sl">TOTAL PASARAN</div></div>
+    <div class="stat"><div class="sv" id="stO" style="color:var(--g);text-shadow:var(--glow)">0</div><div class="sl">SEDANG BUKA</div></div>
+    <div class="stat"><div class="sv" id="stC" style="color:var(--red);text-shadow:var(--glow-red)">0</div><div class="sl">SUDAH TUTUP</div></div>
+    <div class="stat"><div class="sv" id="stS" style="color:var(--gold);text-shadow:var(--glow-gold)">0</div><div class="sl">SEGERA TUTUP</div></div>
+    <div class="stat"><div class="sv" id="stA" style="color:var(--cyan);text-shadow:0 0 8px var(--cyan)">0</div><div class="sl">ALARM HARI INI</div></div>
+  </div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="footer-text">▓▓▓ SISTEM ALARM BET CLOSE OTOMATIS ▓▓▓</div>
-    <div class="footer-text" style="margin-top:4px;">NOTIFIKASI AKAN MUNCUL OTOMATIS SAAT JAM TUTUP BET</div>
-    <div class="footer-brand">ALHACKER168</div>
-    <div class="footer-text" style="margin-top:8px;">© 2024 ALL RIGHTS RESERVED</div>
+  <div class="fbar">
+    <span class="flbl">▸ FILTER:</span>
+    <button class="fbtn on" onclick="setFilter('all',this)">SEMUA</button>
+    <button class="fbtn"    onclick="setFilter('open',this)">BUKA</button>
+    <button class="fbtn"    onclick="setFilter('closed',this)">TUTUP</button>
+    <button class="fbtn"    onclick="setFilter('soon',this)">SEGERA TUTUP</button>
+    <input class="sinp" id="srch" placeholder="CARI PASARAN..." oninput="renderCards()">
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="foot">
+    <div class="fl">▓▓▓ ALARM OTOMATIS BET CLOSE ▓▓▓</div>
+    <div class="fb">ALHACKER168</div>
+    <div class="fl" style="margin-top:5px">© 2024 ALL RIGHTS RESERVED</div>
   </div>
 </div>
 
 <script>
-// ============================================
-// DATA PASARAN
-// ============================================
-const pasaranData = [
-  { name: "HOKIDRAW 5D", days: "SENIN - MINGGU", tutup: null, buka: null, special: "RESULT 24 KALI - BUKA 1 JAM SEKALI", isHoki: true },
-  { name: "TOTOMACAU PAGI", days: "SENIN - MINGGU", tutup: "00:00", buka: "00:15" },
-  { name: "KENTUCKY MIDDAY", days: "SENIN - MINGGU", tutup: "01:05", buka: "01:20" },
-  { name: "FLORIDA MIDDAY", days: "SENIN - MINGGU", tutup: "01:20", buka: "01:30" },
-  { name: "HUAHIN 0100", days: "SENIN - MINGGU", tutup: "00:45", buka: "01:00" },
-  { name: "BANGKOK 0130", days: "SENIN - MINGGU", tutup: "01:15", buka: "01:30" },
-  { name: "NEWYORK MIDDAY", days: "SENIN - MINGGU", tutup: "02:15", buka: "02:25" },
-  { name: "CAROLINA DAY", days: "SENIN - MINGGU", tutup: "02:45", buka: "03:00" },
-  { name: "BRUNEI 02", days: "SENIN - MINGGU", tutup: "02:30", buka: "02:45" },
-  { name: "OREGON 03", days: "SENIN - MINGGU", tutup: "03:50", buka: "04:00" },
-  { name: "OREGON 06", days: "SENIN - MINGGU", tutup: "06:50", buka: "07:00" },
-  { name: "CALIFORNIA", days: "SENIN - MINGGU", tutup: "09:25", buka: "09:30" },
-  { name: "FLORIDA EVENING", days: "SENIN - MINGGU", tutup: "09:35", buka: "09:45" },
-  { name: "OREGON 09", days: "SENIN - MINGGU", tutup: "09:50", buka: "10:00" },
-  { name: "BANGKOK 0930", days: "SENIN - MINGGU", tutup: "09:15", buka: "09:30" },
-  { name: "NEWYORK EVENING", days: "SENIN - MINGGU", tutup: "10:25", buka: "10:35" },
-  { name: "KENTUCKY EVENING", days: "SENIN - MINGGU", tutup: "10:45", buka: "11:00" },
-  { name: "CAROLINA EVENING", days: "SENIN - MINGGU", tutup: "11:17", buka: "11:22" },
-  { name: "TOTO CAMBODIA LIVE", days: "SENIN - MINGGU", tutup: "10:45", buka: "11:00" },
-  { name: "CHELSEA 11", days: "SENIN - MINGGU", tutup: "11:00", buka: "11:15" },
-  { name: "OREGON 12", days: "SENIN - MINGGU", tutup: "12:50", buka: "13:00" },
-  { name: "BULLSEYE", days: "SENIN - MINGGU", tutup: "12:00", buka: "12:15" },
-  { name: "POIPET 12", days: "SENIN - MINGGU", tutup: "12:15", buka: "12:30" },
-  { name: "TOTOMACAU SIANG", days: "SENIN - MINGGU", tutup: "13:00", buka: "13:15" },
-  { name: "SYDNEY LOTTO", days: "SENIN - MINGGU", tutup: "13:49", buka: "14:05" },
-  { name: "BRUNEI 14", days: "SENIN - MINGGU", tutup: "14:30", buka: "14:45" },
-  { name: "CHELSEA 15", days: "SENIN - MINGGU", tutup: "15:00", buka: "15:15" },
-  { name: "POIPET 15", days: "SENIN - MINGGU", tutup: "15:15", buka: "15:30" },
-  { name: "TOTOMALI 1530", days: "SENIN - MINGGU", tutup: "15:15", buka: "15:30" },
-  { name: "TOTOMACAU SORE", days: "SENIN - MINGGU", tutup: "16:00", buka: "16:15" },
-  { name: "HUAHIN 1630", days: "SENIN - MINGGU", tutup: "16:15", buka: "16:30" },
-  { name: "KINGKONG 4D SORE", days: "SENIN - MINGGU", tutup: "17:00", buka: "17:15" },
-  { name: "SINGAPORE", days: "SELASA & JUMAT LIBUR", tutup: "17:30", buka: "17:45" },
-  { name: "MAGNUM4D", days: "RABU, SABTU, & MINGGU", tutup: "18:10", buka: "18:40" },
-  { name: "TOTOMACAU MALAM I", days: "SENIN - MINGGU", tutup: "19:00", buka: "19:15" },
-  { name: "CHELSEA 19", days: "SENIN - MINGGU", tutup: "19:00", buka: "19:15" },
-  { name: "POIPET 19", days: "SENIN - MINGGU", tutup: "19:30", buka: "19:45" },
-  { name: "PCSO", days: "MINGGU LIBUR", tutup: "19:50", buka: "20:10" },
-  { name: "TOTOMALI 2030", days: "SENIN - MINGGU", tutup: "20:15", buka: "20:30" },
-  { name: "HUAHIN 2100", days: "SENIN - MINGGU", tutup: "20:45", buka: "21:00" },
-  { name: "CHELSEA 21", days: "SENIN - MINGGU", tutup: "21:00", buka: "21:15" },
-  { name: "NEVADA", days: "SENIN - MINGGU", tutup: "21:15", buka: "21:30" },
-  { name: "BRUNEI 21", days: "SENIN - MINGGU", tutup: "21:30", buka: "21:45" },
-  { name: "TOTOMACAU MALAM II", days: "SENIN - MINGGU", tutup: "22:00", buka: "22:15" },
-  { name: "POIPET 22", days: "SENIN - MINGGU", tutup: "22:30", buka: "22:45" },
-  { name: "HONGKONG LOTTO", days: "SENIN - MINGGU", tutup: "22:59", buka: "23:15" },
-  { name: "TOTOMACAU MALAM III", days: "SENIN - MINGGU", tutup: "23:00", buka: "23:15" },
-  { name: "TOTOMALI 2330", days: "SENIN - MINGGU", tutup: "23:15", buka: "23:30" },
-  { name: "KINGKONG 4D MALAM", days: "SENIN - MINGGU", tutup: "23:30", buka: "23:45" },
+/* ── DATA ── */
+const DATA=[
+  {n:"HOKIDRAW 5D",    d:"SENIN - MINGGU",       t:null,   b:null,   hoki:true},
+  {n:"TOTOMACAU PAGI", d:"SENIN - MINGGU",        t:"00:00",b:"00:15"},
+  {n:"HUAHIN 0100",    d:"SENIN - MINGGU",        t:"00:45",b:"01:00"},
+  {n:"KENTUCKY MIDDAY",d:"SENIN - MINGGU",        t:"01:05",b:"01:20"},
+  {n:"FLORIDA MIDDAY", d:"SENIN - MINGGU",        t:"01:20",b:"01:30"},
+  {n:"BANGKOK 0130",   d:"SENIN - MINGGU",        t:"01:15",b:"01:30"},
+  {n:"NEWYORK MIDDAY", d:"SENIN - MINGGU",        t:"02:15",b:"02:25"},
+  {n:"BRUNEI 02",      d:"SENIN - MINGGU",        t:"02:30",b:"02:45"},
+  {n:"CAROLINA DAY",   d:"SENIN - MINGGU",        t:"02:45",b:"03:00"},
+  {n:"OREGON 03",      d:"SENIN - MINGGU",        t:"03:50",b:"04:00"},
+  {n:"OREGON 06",      d:"SENIN - MINGGU",        t:"06:50",b:"07:00"},
+  {n:"BANGKOK 0930",   d:"SENIN - MINGGU",        t:"09:15",b:"09:30"},
+  {n:"CALIFORNIA",     d:"SENIN - MINGGU",        t:"09:25",b:"09:30"},
+  {n:"FLORIDA EVENING",d:"SENIN - MINGGU",        t:"09:35",b:"09:45"},
+  {n:"OREGON 09",      d:"SENIN - MINGGU",        t:"09:50",b:"10:00"},
+  {n:"NEWYORK EVENING",d:"SENIN - MINGGU",        t:"10:25",b:"10:35"},
+  {n:"KENTUCKY EVENING",d:"SENIN - MINGGU",       t:"10:45",b:"11:00"},
+  {n:"TOTO CAMBODIA",  d:"SENIN - MINGGU",        t:"10:45",b:"11:00"},
+  {n:"CHELSEA 11",     d:"SENIN - MINGGU",        t:"11:00",b:"11:15"},
+  {n:"CAROLINA EVENING",d:"SENIN - MINGGU",       t:"11:17",b:"11:22"},
+  {n:"BULLSEYE",       d:"SENIN - MINGGU",        t:"12:00",b:"12:15"},
+  {n:"POIPET 12",      d:"SENIN - MINGGU",        t:"12:15",b:"12:30"},
+  {n:"OREGON 12",      d:"SENIN - MINGGU",        t:"12:50",b:"13:00"},
+  {n:"TOTOMACAU SIANG",d:"SENIN - MINGGU",        t:"13:00",b:"13:15"},
+  {n:"SYDNEY LOTTO",   d:"SENIN - MINGGU",        t:"13:49",b:"14:05"},
+  {n:"BRUNEI 14",      d:"SENIN - MINGGU",        t:"14:30",b:"14:45"},
+  {n:"CHELSEA 15",     d:"SENIN - MINGGU",        t:"15:00",b:"15:15"},
+  {n:"POIPET 15",      d:"SENIN - MINGGU",        t:"15:15",b:"15:30"},
+  {n:"TOTOMALI 1530",  d:"SENIN - MINGGU",        t:"15:15",b:"15:30"},
+  {n:"TOTOMACAU SORE", d:"SENIN - MINGGU",        t:"16:00",b:"16:15"},
+  {n:"HUAHIN 1630",    d:"SENIN - MINGGU",        t:"16:15",b:"16:30"},
+  {n:"KINGKONG 4D SORE",d:"SENIN - MINGGU",       t:"17:00",b:"17:15"},
+  {n:"SINGAPORE",      d:"SELASA & JUMAT LIBUR",  t:"17:30",b:"17:45"},
+  {n:"MAGNUM4D",       d:"RABU, SABTU & MINGGU",  t:"18:10",b:"18:40"},
+  {n:"TOTOMACAU MALAM I",d:"SENIN - MINGGU",      t:"19:00",b:"19:15"},
+  {n:"CHELSEA 19",     d:"SENIN - MINGGU",        t:"19:00",b:"19:15"},
+  {n:"POIPET 19",      d:"SENIN - MINGGU",        t:"19:30",b:"19:45"},
+  {n:"PCSO",           d:"MINGGU LIBUR",          t:"19:50",b:"20:10"},
+  {n:"TOTOMALI 2030",  d:"SENIN - MINGGU",        t:"20:15",b:"20:30"},
+  {n:"HUAHIN 2100",    d:"SENIN - MINGGU",        t:"20:45",b:"21:00"},
+  {n:"CHELSEA 21",     d:"SENIN - MINGGU",        t:"21:00",b:"21:15"},
+  {n:"NEVADA",         d:"SENIN - MINGGU",        t:"21:15",b:"21:30"},
+  {n:"BRUNEI 21",      d:"SENIN - MINGGU",        t:"21:30",b:"21:45"},
+  {n:"TOTOMACAU MALAM II",d:"SENIN - MINGGU",     t:"22:00",b:"22:15"},
+  {n:"POIPET 22",      d:"SENIN - MINGGU",        t:"22:30",b:"22:45"},
+  {n:"HONGKONG LOTTO", d:"SENIN - MINGGU",        t:"22:59",b:"23:15"},
+  {n:"TOTOMACAU MALAM III",d:"SENIN - MINGGU",    t:"23:00",b:"23:15"},
+  {n:"TOTOMALI 2330",  d:"SENIN - MINGGU",        t:"23:15",b:"23:30"},
+  {n:"KINGKONG 4D MALAM",d:"SENIN - MINGGU",      t:"23:30",b:"23:45"},
 ];
 
-// ============================================
-// STATE
-// ============================================
-let alarmQueue = [];
-let isAlarmShowing = false;
-let firedToday = new Set();
-let totalAlarmsToday = 0;
-let currentFilter = 'all';
-let hokiAlarmInterval = null;
-
-// ============================================
-// MATRIX RAIN
-// ============================================
-const canvas = document.getElementById('matrix-canvas');
-const ctx = canvas.getContext('2d');
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  initMatrix();
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*<>{}[]|';
-const fontSize = 14;
-let drops = [];
-
-function initMatrix() {
-  const cols = Math.floor(canvas.width / fontSize);
-  drops = [];
-  for (let i = 0; i < cols; i++) {
-    drops[i] = Math.floor(Math.random() * -canvas.height / fontSize);
+/* ── MATRIX RAIN ── */
+(function(){
+  const cv=document.getElementById('mc'),cx=cv.getContext('2d');
+  const CH='アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&';
+  const FS=14; let dr=[];
+  function resize(){
+    cv.width=window.innerWidth; cv.height=window.innerHeight;
+    const c=Math.floor(cv.width/FS);
+    dr=Array.from({length:c},()=>Math.floor(Math.random()*-cv.height/FS));
   }
-}
-initMatrix();
-
-function drawMatrix() {
-  // Semi-transparent black to create trail
-  ctx.fillStyle = 'rgba(0, 5, 0, 0.08)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.font = 'bold ' + fontSize + 'px Share Tech Mono';
-
-  for (let i = 0; i < drops.length; i++) {
-    const char = chars[Math.floor(Math.random() * chars.length)];
-    const x = i * fontSize;
-    const y = drops[i] * fontSize;
-
-    // Head of the drop is bright white
-    if (drops[i] >= 0) {
-      if (Math.random() > 0.92) {
-        ctx.fillStyle = '#ffffff';
-      } else if (Math.random() > 0.7) {
-        ctx.fillStyle = '#88ffaa';
-      } else {
-        ctx.fillStyle = '#00ff41';
-      }
-      ctx.fillText(char, x, y);
+  resize(); window.addEventListener('resize',resize);
+  function draw(){
+    cx.fillStyle='rgba(0,8,0,0.07)'; cx.fillRect(0,0,cv.width,cv.height);
+    cx.font=`bold ${FS}px 'Share Tech Mono',monospace`;
+    for(let i=0;i<dr.length;i++){
+      const c=CH[Math.floor(Math.random()*CH.length)],x=i*FS,y=dr[i]*FS,r=Math.random();
+      cx.fillStyle=r>.96?'#ffffff':r>.72?'#aaffbb':'#00ff41';
+      cx.fillText(c,x,y);
+      if(y>cv.height&&Math.random()>.975) dr[i]=0; else dr[i]++;
     }
+  }
+  setInterval(draw,40);
+})();
 
-    // Reset drop when it goes off screen
-    if (y > canvas.height && Math.random() > 0.97) {
-      drops[i] = 0;
+/* ── AUDIO ── */
+let AC=null,audioOk=false;
+function getAC(){
+  if(!AC) AC=new(window.AudioContext||window.webkitAudioContext)();
+  if(AC.state==='suspended') AC.resume();
+  return AC;
+}
+function unlockAudio(){
+  if(audioOk) return;
+  try{
+    const ac=getAC(),buf=ac.createBuffer(1,1,22050),src=ac.createBufferSource();
+    src.buffer=buf; src.connect(ac.destination); src.start(0); audioOk=true;
+  }catch(e){}
+}
+document.addEventListener('click',unlockAudio);
+document.addEventListener('touchstart',unlockAudio);
+document.addEventListener('visibilitychange',()=>{if(AC&&AC.state==='suspended')AC.resume();});
+
+function note(ac,freq,t,dur,vol){
+  const o=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter();
+  f.type='lowpass'; f.frequency.value=1900;
+  o.type='sine'; o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(vol,t+0.04);
+  g.gain.setValueAtTime(vol,t+dur*0.55);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(f); f.connect(g); g.connect(ac.destination);
+  o.start(t); o.stop(t+dur+0.05);
+}
+
+function playSound(isHoki){
+  try{
+    const ac=getAC(),t0=ac.currentTime+0.05;
+    if(isHoki){
+      // 5 nada megah: C E G E C6
+      [[523,.38],[659,.38],[784,.38],[659,.3],[1047,.65]].reduce((off,[f,d])=>{
+        note(ac,f,t0+off,d,.15); note(ac,f*1.5,t0+off,d,.05);
+        return off+d*.82;
+      },0);
+    } else {
+      // Ding Dong 3 nada merdu
+      [[880,.44],[659,.44],[784,.72]].reduce((off,[f,d])=>{
+        note(ac,f,t0+off,d,.14); note(ac,f*.5,t0+off,d,.04);
+        return off+d*.72;
+      },0);
     }
-    drops[i]++;
-  }
+  }catch(e){console.warn('Audio:',e);}
 }
 
-setInterval(drawMatrix, 40);
+function testSuara(h){ unlockAudio(); setTimeout(()=>playSound(h),60); }
 
-// ============================================
-// WEB NOTIFICATIONS
-// ============================================
-let notifPermission = false;
-
-function requestNotifPermission() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'granted') {
-    notifPermission = true;
-  } else if (Notification.permission !== 'denied') {
-    Notification.requestPermission().then(perm => {
-      notifPermission = perm === 'granted';
+/* ── NOTIFIKASI ── */
+let notifOk=false;
+function doNotif(){
+  if(!('Notification'in window)){alert('Browser tidak mendukung notifikasi.');return;}
+  Notification.requestPermission().then(p=>{
+    notifOk=p==='granted';
+    const b=document.getElementById('notifBtn');
+    if(notifOk){b.textContent='✅ NOTIFIKASI AKTIF';b.className='xbtn ok';}
+    else{b.textContent='❌ IZIN DITOLAK';}
+  });
+}
+function sendNotif(name,t,b){
+  if(!notifOk) return;
+  try{
+    const n=new Notification('⚠️ BET CLOSE! ALHACKER168',{
+      body:`🔴 ${name}\n⏰ Tutup: ${t} WIB\n🟢 Buka: ${b} WIB`,
+      requireInteraction:true, tag:name+'-'+t
     });
-  }
+    n.onclick=()=>{window.focus();n.close();};
+  }catch(e){}
+}
+if(typeof Notification!=='undefined'&&Notification.permission==='granted'){
+  notifOk=true;
+  window.addEventListener('load',()=>{
+    const b=document.getElementById('notifBtn');
+    if(b){b.textContent='✅ NOTIFIKASI AKTIF';b.className='xbtn ok';}
+  });
 }
 
-function sendBrowserNotif(name, tutup, buka) {
-  if (!notifPermission || !('Notification' in window)) return;
-  try {
-    const n = new Notification('⚠️ BET CLOSE! - ALHACKER168', {
-      body: `🔴 ${name}\n⏰ BET CLOSE: ${tutup} WIB\n🟢 BUKA LAGI: ${buka} WIB`,
-      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000"/><text y="75" font-size="80" fill="%2300ff41">⚠</text></svg>',
-      tag: name + '-' + tutup,
-      requireInteraction: true,
-      vibrate: [200, 100, 200]
-    });
-    n.onclick = () => { window.focus(); n.close(); };
-  } catch(e) {}
-}
+/* ── HELPERS ── */
+const pad=n=>String(n).padStart(2,'0');
+const toMin=s=>{const[h,m]=s.split(':').map(Number);return h*60+m;};
+const nowMin=()=>{const n=new Date();return n.getHours()*60+n.getMinutes();};
+const nowSec=()=>{const n=new Date();return n.getHours()*3600+n.getMinutes()*60+n.getSeconds();};
+const fmtCd=s=>{if(s<0)s+=86400;return`${pad(Math.floor(s/3600))}:${pad(Math.floor(s%3600/60))}:${pad(s%60)}`;};
+const DAYS=['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU'];
+const MON=['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGS','SEP','OKT','NOV','DES'];
 
-// Request permission on load
-requestNotifPermission();
-
-// ============================================
-// TIME HELPERS
-// ============================================
-function getNow() {
-  const now = new Date();
-  return { h: now.getHours(), m: now.getMinutes(), s: now.getSeconds() };
-}
-
-function timeToMins(timeStr) {
-  if (!timeStr) return -1;
-  const [h, m] = timeStr.split(':').map(Number);
-  return h * 60 + m;
-}
-
-function nowMins() {
-  const n = getNow();
-  return n.h * 60 + n.m;
-}
-
-function nowSecs() {
-  const n = getNow();
-  return n.h * 3600 + n.m * 60 + n.s;
-}
-
-function formatTime(h, m, s) {
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function formatCountdown(totalSecs) {
-  if (totalSecs < 0) totalSecs += 86400;
-  const h = Math.floor(totalSecs / 3600);
-  const m = Math.floor((totalSecs % 3600) / 60);
-  const s = totalSecs % 60;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function getDayName(d) {
-  return ['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU'][d];
-}
-
-function getMonthName(m) {
-  return ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGS','SEP','OKT','NOV','DES'][m];
-}
-
-// ============================================
-// CARD STATUS
-// ============================================
-function getStatus(p) {
-  if (p.isHoki) return 'open';
-  const now = nowMins();
-  const tutupMins = timeToMins(p.tutup);
-  const bukaMins = timeToMins(p.buka);
-  // "buka" = betting open, "tutup" = bet close
-  // open = now < tutup
-  // soon = tutup - now <= 15 mins and tutup - now > 0
-  // closed = now >= tutup
-  const diff = tutupMins - now;
-  if (diff > 15) return 'open';
-  if (diff > 0) return 'soon';
-  // After close, consider it open again after buka time
-  const diffFromBuka = now - bukaMins;
-  if (diffFromBuka >= 0 && diffFromBuka < 60) return 'open';
+function getStatus(p){
+  if(p.hoki) return 'open';
+  const nm=nowMin(),tm=toMin(p.t),bm=toMin(p.b),diff=tm-nm;
+  if(diff>15)  return 'open';
+  if(diff>0)   return 'soon';
+  const ab=nm-bm; if(ab>=0&&ab<120) return 'open';
   return 'closed';
 }
-
-function getCountdownText(p) {
-  if (p.isHoki || !p.tutup) return '';
-  const now = nowMins();
-  const tutupMins = timeToMins(p.tutup);
-  const diff = tutupMins - now;
-  if (diff > 0 && diff <= 60) {
-    return `TUTUP DALAM ${diff} MENIT`;
-  }
-  if (diff <= 0 && diff > -30) {
-    return `SUDAH TUTUP ${Math.abs(diff)} MENIT LALU`;
-  }
+function cdTxt(p){
+  if(p.hoki||!p.t) return '';
+  const d=toMin(p.t)-nowMin();
+  if(d>0&&d<=60)  return `TUTUP ${d} MENIT LAGI`;
+  if(d<=0&&d>-30) return `TUTUP ${Math.abs(d)} MENIT LALU`;
   return '';
 }
 
-// ============================================
-// RENDER CARDS
-// ============================================
-function renderCards() {
-  const grid = document.getElementById('cardsGrid');
-  const search = document.getElementById('searchInput').value.toUpperCase();
-  grid.innerHTML = '';
-
-  let openC = 0, closedC = 0, soonC = 0;
-
-  pasaranData.forEach((p, idx) => {
-    const status = getStatus(p);
-    if (status === 'open') openC++;
-    else if (status === 'closed') closedC++;
-    else if (status === 'soon') soonC++;
-
-    if (currentFilter !== 'all' && status !== currentFilter) return;
-    if (search && !p.name.includes(search)) return;
-
-    const card = document.createElement('div');
-    card.className = `card ${status}`;
-    card.dataset.idx = idx;
-
-    const statusLabel = status === 'open' ? 'BUKA' : status === 'soon' ? 'SEGERA TUTUP' : 'TUTUP';
-    const statusClass = status === 'open' ? 'status-open' : status === 'soon' ? 'status-soon' : 'status-closed';
-    const countdown = getCountdownText(p);
-
-    let timesHtml = '';
-    if (p.isHoki) {
-      timesHtml = `
-        <div style="margin-top:10px;">
-          <div class="hokidraw-badge">⚡ SETIAP JAM SEKALI</div>
-          <div style="font-size:9px; color: var(--gold2); letter-spacing:2px; margin-top:6px;">RESULT 24 KALI SEHARI</div>
-        </div>
-      `;
+/* ── RENDER CARDS ── */
+let curF='all';
+function renderCards(){
+  const grid=document.getElementById('grid');
+  const q=(document.getElementById('srch').value||'').toUpperCase().trim();
+  grid.innerHTML=''; let nO=0,nC=0,nS=0;
+  DATA.forEach(p=>{
+    const st=getStatus(p);
+    if(st==='open')nO++; else if(st==='closed')nC++; else if(st==='soon')nS++;
+    if(curF!=='all'&&st!==curF) return;
+    if(q&&!p.n.includes(q)) return;
+    const lbl=st==='open'?'BUKA':st==='soon'?'SEGERA TUTUP':'TUTUP';
+    const bcls=st==='open'?'bo':st==='soon'?'bs':'bc';
+    const cd=cdTxt(p);
+    let times='';
+    if(p.hoki){
+      times=`<div class="hbdg2">⚡ SETIAP JAM SEKALI</div>
+             <div style="font-size:8px;color:var(--gold2);letter-spacing:2px;margin-top:5px">RESULT 24 KALI SEHARI</div>`;
     } else {
-      timesHtml = `
-        <div class="card-times">
-          <div class="time-block close-block">
-            <div class="time-block-label">BET CLOSE</div>
-            <div class="time-value">${p.tutup} <span style="font-size:10px; opacity:0.7;">WIB</span></div>
-          </div>
-          <div class="time-block">
-            <div class="time-block-label">BUKA LAGI</div>
-            <div class="time-value">${p.buka} <span style="font-size:10px; opacity:0.7;">WIB</span></div>
-          </div>
-        </div>
-      `;
+      times=`<div class="ctimes">
+        <div class="ct r"><div class="ctl">BET CLOSE</div><div class="ctv">${p.t} <span style="font-size:8px;opacity:.6">WIB</span></div></div>
+        <div class="ct">  <div class="ctl">BUKA LAGI</div><div class="ctv">${p.b} <span style="font-size:8px;opacity:.6">WIB</span></div></div>
+      </div>`;
     }
-
-    card.innerHTML = `
-      <div class="card-corner"></div>
-      <div class="card-header">
-        <div class="card-name">${p.name}</div>
-        <div class="card-status ${statusClass}">${statusLabel}</div>
-      </div>
-      <div class="card-days"><span class="days-icon">◈</span> ${p.days}</div>
-      ${timesHtml}
-      ${countdown ? `<div class="card-countdown">⟳ ${countdown}</div>` : ''}
-      ${p.special ? `<div class="card-special">★ ${p.special}</div>` : ''}
-    `;
-
-    grid.appendChild(card);
+    const div=document.createElement('div');
+    div.className=`card is-${st}`;
+    div.innerHTML=`<div class="ccnr"></div>
+      <div class="chd"><div class="cn">${p.n}</div><div class="cbdg ${bcls}">${lbl}</div></div>
+      <div class="cday">◈ ${p.d}</div>${times}
+      ${cd?`<div class="ccd">⟳ ${cd}</div>`:''}`;
+    grid.appendChild(div);
   });
-
-  document.getElementById('totalCount').textContent = pasaranData.length;
-  document.getElementById('openCount').textContent = openC;
-  document.getElementById('closedCount').textContent = closedC;
-  document.getElementById('statTotal').textContent = pasaranData.length;
-  document.getElementById('statOpen').textContent = openC;
-  document.getElementById('statClosed').textContent = closedC;
-  document.getElementById('statSoon').textContent = soonC;
-  document.getElementById('statAlarms').textContent = totalAlarmsToday;
+  document.getElementById('sO').textContent=nO;
+  document.getElementById('sC').textContent=nC;
+  document.getElementById('stT').textContent=DATA.length;
+  document.getElementById('stO').textContent=nO;
+  document.getElementById('stC').textContent=nC;
+  document.getElementById('stS').textContent=nS;
+}
+function setFilter(f,btn){
+  curF=f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); renderCards();
 }
 
-// ============================================
-// FILTER & SEARCH
-// ============================================
-function filterCards(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCards();
+/* ── CLOCK ── */
+function tickClock(){
+  const n=new Date();
+  document.getElementById('clkM').textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
+  document.getElementById('clkD').textContent=`${DAYS[n.getDay()]}, ${n.getDate()} ${MON[n.getMonth()]} ${n.getFullYear()}`;
+  document.getElementById('aTime').textContent=`${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
+}
+function tickNext(){
+  const ns=nowSec(),nm=Math.floor(ns/60);
+  let best=Infinity,bn='',bt='';
+  DATA.forEach(p=>{
+    if(p.hoki){
+      const nxt=((Math.floor(ns/3600)+1)*3600)-ns;
+      if(nxt<best){best=nxt;bn='HOKIDRAW 5D';bt=`${pad((Math.floor(ns/3600)+1)%24)}:00`;}
+      return;
+    }
+    if(!p.t) return;
+    let dm=toMin(p.t)-nm; if(dm<=0) dm+=1440;
+    const ds=dm*60-(ns%60);
+    if(ds>0&&ds<best){best=ds;bn=p.n;bt=p.t;}
+  });
+  document.getElementById('clkN').textContent=best<Infinity?fmtCd(best):'--:--:--';
+  document.getElementById('clkNI').textContent=bn?`▸ ${bn} | ${bt} WIB`:'';
 }
 
-function searchCards() {
-  renderCards();
+/* ── ALARM QUEUE ── */
+let queue=[],showing=false,fired=new Set(),alarmCnt=0,titleTmr=null;
+function dayKey(){const n=new Date();return`${n.getFullYear()}-${n.getMonth()}-${n.getDate()}`;}
+function aKey(name,t){return`${dayKey()}-${name}-${t}`;}
+
+function enqueue(name,t,b){
+  const k=aKey(name,t); if(fired.has(k)) return;
+  fired.add(k); alarmCnt++;
+  document.getElementById('sA').textContent=alarmCnt;
+  document.getElementById('stA').textContent=alarmCnt;
+  queue.push({name,t,b}); updateQ();
+  sendNotif(name,t,b);
+  if(!showing) showNext();
+}
+function showNext(){
+  if(!queue.length){showing=false;return;}
+  showing=true; const a=queue[0];
+  document.getElementById('aMkt').textContent=a.name;
+  document.getElementById('aTutup').textContent=a.t+' WIB';
+  document.getElementById('aBuka').textContent=a.b+' WIB';
+  document.getElementById('ovl').classList.add('on');
+  updateQ(); playSound(a.name==='HOKIDRAW 5D'); flashTitle(a.name);
+}
+function dismissAlarm(){
+  queue.shift();
+  document.getElementById('ovl').classList.remove('on');
+  stopFlash(); updateQ(); renderCards();
+  if(queue.length) setTimeout(showNext,400); else showing=false;
+}
+function updateQ(){
+  const n=queue.length;
+  document.getElementById('qnum').textContent=n;
+  document.getElementById('qbdg').style.display=n>1?'block':'none';
+}
+function flashTitle(name){
+  let on=true;
+  titleTmr=setInterval(()=>{document.title=on?`⚠️ BET CLOSE: ${name}`:'🔴 ALHACKER168';on=!on;},700);
+}
+function stopFlash(){
+  if(titleTmr){clearInterval(titleTmr);titleTmr=null;}
+  document.title='CEK JADWAL TOGEL ALHACKER168';
 }
 
-// ============================================
-// CLOCK
-// ============================================
-function updateClock() {
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  const s = String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('mainClock').textContent = `${h}:${m}:${s}`;
-
-  const day = getDayName(now.getDay());
-  const date = now.getDate();
-  const month = getMonthName(now.getMonth());
-  const year = now.getFullYear();
-  document.getElementById('mainDate').textContent = `${day}, ${date} ${month} ${year}`;
-
-  document.getElementById('alarmCurrentTime').textContent = `${h}:${m}:${s}`;
-}
-
-// ============================================
-// NEXT ALARM COUNTDOWN
-// ============================================
-function updateNextAlarm() {
-  const nowS = nowSecs();
-  const nowM = Math.floor(nowS / 60);
-
-  let minDiff = Infinity;
-  let nextName = '';
-  let nextTime = '';
-
-  pasaranData.forEach(p => {
-    if (p.isHoki) {
-      // Next hour mark
-      const nextHourSec = (Math.floor(nowS / 3600) + 1) * 3600;
-      const diff = nextHourSec - nowS;
-      if (diff < minDiff) {
-        minDiff = diff;
-        nextName = 'HOKIDRAW 5D';
-        nextTime = formatTime(Math.floor(nextHourSec/3600)%24, 0, 0).slice(0,5);
+/* ── CHECK ALARMS ── */
+function checkAlarms(){
+  const n=new Date(),s=n.getSeconds();
+  if(s>2) return;
+  const nm=nowMin();
+  DATA.forEach(p=>{
+    if(p.hoki){
+      if(n.getMinutes()===0){
+        const k=aKey('HOKIDRAW 5D',`${pad(n.getHours())}:00`);
+        if(!fired.has(k)) enqueue('HOKIDRAW 5D',`${pad(n.getHours())}:00`,`${pad((n.getHours()+1)%24)}:00`);
       }
       return;
     }
-    if (!p.tutup) return;
-    const tutupMins = timeToMins(p.tutup);
-    let diffM = tutupMins - nowM;
-    if (diffM <= 0) diffM += 1440;
-    const diffS = diffM * 60 - (nowS % 60);
-    if (diffS < minDiff && diffS > 0) {
-      minDiff = diffS;
-      nextName = p.name;
-      nextTime = p.tutup;
-    }
-  });
-
-  if (nextName) {
-    document.getElementById('nextAlarmCountdown').textContent = formatCountdown(minDiff);
-    document.getElementById('nextAlarmInfo').textContent = `▸ ${nextName} | BET CLOSE ${nextTime} WIB`;
-  }
-}
-
-// ============================================
-// ALARM SYSTEM
-// ============================================
-function getTodayKey(name, time) {
-  const now = new Date();
-  return `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${name}-${time}`;
-}
-
-function checkAlarms() {
-  const nowM = nowMins();
-  const nowSec = new Date().getSeconds();
-  if (nowSec !== 0 && nowSec !== 1) return; // only fire at exact minute
-
-  pasaranData.forEach(p => {
-    if (p.isHoki) return; // handled separately
-    if (!p.tutup) return;
-
-    const tutupMins = timeToMins(p.tutup);
-    if (tutupMins === nowM) {
-      const key = getTodayKey(p.name, p.tutup);
-      if (!firedToday.has(key)) {
-        firedToday.add(key);
-        totalAlarmsToday++;
-        queueAlarm(p.name, p.tutup, p.buka);
-      }
-    }
+    if(!p.t) return;
+    if(toMin(p.t)===nm) enqueue(p.n,p.t,p.b);
   });
 }
 
-function checkHokiAlarm() {
-  // HOKIDRAW: every hour on the dot
-  const now = new Date();
-  const m = now.getMinutes();
-  const s = now.getSeconds();
-  if (m === 0 && s <= 2) {
-    const key = getTodayKey('HOKIDRAW 5D', now.getHours() + ':00');
-    if (!firedToday.has(key)) {
-      firedToday.add(key);
-      totalAlarmsToday++;
-      const hh = String(now.getHours()).padStart(2,'0');
-      const nextH = String((now.getHours() + 1) % 24).padStart(2,'0');
-      queueAlarm('HOKIDRAW 5D', `${hh}:00`, `${nextH}:00`);
-    }
-  }
+/* ── MAIN LOOP ── */
+let lastMin=-1;
+function loop(){
+  tickClock(); tickNext(); checkAlarms();
+  const m=new Date().getMinutes();
+  if(m!==lastMin){lastMin=m;renderCards();}
 }
-
-function queueAlarm(name, tutup, buka) {
-  alarmQueue.push({ name, tutup, buka });
-  updateQueueBadge();
-  // Kirim notifikasi browser (muncul di tab lain juga)
-  sendBrowserNotif(name, tutup, buka);
-  if (!isAlarmShowing) showNextAlarm();
-}
-
-function showNextAlarm() {
-  if (alarmQueue.length === 0) {
-    isAlarmShowing = false;
-    return;
-  }
-  isAlarmShowing = true;
-  const alarm = alarmQueue[0];
-  document.getElementById('alarmMarketName').textContent = alarm.name;
-  document.getElementById('alarmCloseTime').textContent = alarm.tutup + ' WIB';
-  document.getElementById('alarmOpenTime').textContent = alarm.buka + ' WIB';
-  document.getElementById('alarmOverlay').classList.add('active');
-  updateQueueBadge();
-  playAlarmSound(alarm.name === 'HOKIDRAW 5D');
-  startTitleFlash(alarm.name);
-}
-
-function dismissAlarm() {
-  alarmQueue.shift();
-  document.getElementById('alarmOverlay').classList.remove('active');
-  stopTitleFlash();
-  updateQueueBadge();
-  renderCards();
-  if (alarmQueue.length > 0) {
-    setTimeout(showNextAlarm, 500);
-  } else {
-    isAlarmShowing = false;
-  }
-}
-
-function updateQueueBadge() {
-  const badge = document.getElementById('queueBadge');
-  const count = alarmQueue.length;
-  document.getElementById('queueCount').textContent = count;
-  badge.style.display = count > 1 ? 'block' : 'none';
-}
-
-function enableNotif() {
-  if (!('Notification' in window)) {
-    alert('Browser Anda tidak mendukung notifikasi.');
-    return;
-  }
-  Notification.requestPermission().then(perm => {
-    notifPermission = perm === 'granted';
-    const btn = document.getElementById('notifBtn');
-    if (notifPermission) {
-      btn.textContent = '✅ NOTIFIKASI AKTIF';
-      btn.style.color = 'var(--green)';
-      btn.style.borderColor = 'var(--green)';
-      btn.style.background = 'rgba(0,255,65,0.1)';
-      btn.disabled = true;
-    } else {
-      btn.textContent = '❌ IZIN DITOLAK';
-      btn.style.color = 'var(--red)';
-    }
-  });
-}
-
-// Flash tab title on alarm
-let titleFlashInterval = null;
-function startTitleFlash(name) {
-  let toggle = true;
-  const orig = document.title;
-  titleFlashInterval = setInterval(() => {
-    document.title = toggle ? `⚠️ BET CLOSE: ${name}` : '🔴 ALHACKER168';
-    toggle = !toggle;
-  }, 700);
-}
-function stopTitleFlash() {
-  if (titleFlashInterval) { clearInterval(titleFlashInterval); titleFlashInterval = null; }
-  document.title = 'CEK JADWAL TOGEL ALHACKER168';
-}
-
-// Update permission button state on load
-window.addEventListener('load', () => {
-  const btn = document.getElementById('notifBtn');
-  if (!('Notification' in window)) {
-    btn.textContent = '❌ NOTIF TIDAK DIDUKUNG';
-    btn.disabled = true;
-    return;
-  }
-  if (Notification.permission === 'granted') {
-    notifPermission = true;
-    btn.textContent = '✅ NOTIFIKASI AKTIF';
-    btn.style.color = 'var(--green)';
-    btn.style.borderColor = 'var(--green)';
-    btn.style.background = 'rgba(0,255,65,0.1)';
-    btn.disabled = true;
-  }
-});
-
-// ============================================
-// AUDIO SYSTEM - Suara Merdu Bet Close
-// ============================================
-let audioCtx = null;
-let audioUnlocked = false;
-
-function getAudioCtx() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  return audioCtx;
-}
-
-// Unlock audio on first user interaction (required by browsers)
-function unlockAudio() {
-  if (audioUnlocked) return;
-  try {
-    const ac = getAudioCtx();
-    const buf = ac.createBuffer(1, 1, 22050);
-    const src = ac.createBufferSource();
-    src.buffer = buf;
-    src.connect(ac.destination);
-    src.start(0);
-    audioUnlocked = true;
-  } catch(e) {}
-}
-document.addEventListener('click', unlockAudio, { once: false });
-document.addEventListener('keydown', unlockAudio, { once: false });
-
-// Buat nada lembut dengan reverb/fade
-function playNote(ac, freq, startTime, duration, volume = 0.18, type = 'sine') {
-  const osc = ac.createOscillator();
-  const gain = ac.createGain();
-  const filter = ac.createBiquadFilter();
-
-  filter.type = 'lowpass';
-  filter.frequency.value = 2000;
-
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, startTime);
-
-  gain.gain.setValueAtTime(0, startTime);
-  gain.gain.linearRampToValueAtTime(volume, startTime + 0.05);
-  gain.gain.setValueAtTime(volume, startTime + duration * 0.6);
-  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-  osc.connect(filter);
-  filter.connect(gain);
-  gain.connect(ac.destination);
-
-  osc.start(startTime);
-  osc.stop(startTime + duration + 0.05);
-}
-
-// Melodi: Do Mi Sol Mi Do - lembut & merdu seperti notifikasi premium
-function playAlarmSound(isHoki = false) {
-  try {
-    const ac = getAudioCtx();
-    const t = ac.currentTime + 0.05;
-
-    if (isHoki) {
-      // HOKIDRAW: melodi lebih panjang & megah - Do Re Mi Fa Sol
-      const melody = [
-        { freq: 523.25, dur: 0.4 },  // C5
-        { freq: 659.25, dur: 0.4 },  // E5
-        { freq: 783.99, dur: 0.4 },  // G5
-        { freq: 659.25, dur: 0.3 },  // E5
-        { freq: 1046.5, dur: 0.7 },  // C6 - nada tinggi ending
-      ];
-      let offset = 0;
-      melody.forEach(n => {
-        playNote(ac, n.freq, t + offset, n.dur, 0.16, 'sine');
-        // Tambah harmoni lembut
-        playNote(ac, n.freq * 1.5, t + offset, n.dur, 0.06, 'sine');
-        offset += n.dur * 0.85;
-      });
-    } else {
-      // Pasaran biasa: 3 nada lembut - Ding Dong Ding
-      const notes = [
-        { freq: 880,    dur: 0.5 },  // A5
-        { freq: 659.25, dur: 0.5 },  // E5
-        { freq: 783.99, dur: 0.8 },  // G5 - sustain
-      ];
-      let offset = 0;
-      notes.forEach(n => {
-        playNote(ac, n.freq, t + offset, n.dur, 0.15, 'sine');
-        playNote(ac, n.freq / 2, t + offset, n.dur, 0.05, 'sine'); // sub bass lembut
-        offset += n.dur * 0.75;
-      });
-    }
-  } catch(e) {
-    console.log('Audio error:', e);
-  }
-}
-
-// Keep audio context alive saat tab di background
-// Browser throttle setInterval tapi AudioContext tetap jalan
-document.addEventListener('visibilitychange', () => {
-  if (!audioCtx) return;
-  if (document.hidden) {
-    // Tab di background - resume AudioContext agar tetap aktif
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-  }
-});
-
-// ============================================
-// MAIN LOOP
-// ============================================
-function mainLoop() {
-  updateClock();
-  updateNextAlarm();
-  checkAlarms();
-  checkHokiAlarm();
-}
-
-// Render cards every 10s
-let lastRenderMin = -1;
-function renderLoop() {
-  const m = new Date().getMinutes();
-  if (m !== lastRenderMin) {
-    lastRenderMin = m;
-    renderCards();
-  }
-}
-
-// Initial render
 renderCards();
-
-// Start loops
-setInterval(mainLoop, 1000);
-setInterval(renderLoop, 5000);
-mainLoop();
-
-// TEST: You can remove this block - it's just for showing the modal works
-// setTimeout(() => queueAlarm('HONGKONG LOTTO', '22:59', '23:15'), 3000);
+setInterval(loop,1000);
+loop();
 </script>
 </body>
 </html>
