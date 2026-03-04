@@ -361,17 +361,23 @@ function note(ac,freq,t,dur,vol){
   o.start(t); o.stop(t+dur+0.05);
 }
 
-function playSound(isHoki){
+// Durasi satu melodi (detik) — dipakai untuk atur interval repeat
+const MELODY_DUR_NORMAL = 3.0;  // ~3 detik untuk pasaran biasa
+const MELODY_DUR_HOKI   = 3.5;  // ~3.5 detik untuk hokidraw
+const REPEAT_GAP = 2.5;         // jeda diam antar melodi (detik)
+
+let alarmLoopTimer = null;      // setInterval handle
+let alarmLoopActive = false;
+
+function playOnce(isHoki){
   try{
-    const ac=getAC(),t0=ac.currentTime+0.05;
+    const ac=getAC(), t0=ac.currentTime+0.05;
     if(isHoki){
-      // 5 nada megah: C E G E C6
       [[523,.38],[659,.38],[784,.38],[659,.3],[1047,.65]].reduce((off,[f,d])=>{
         note(ac,f,t0+off,d,.15); note(ac,f*1.5,t0+off,d,.05);
         return off+d*.82;
       },0);
     } else {
-      // Ding Dong 3 nada merdu
       [[880,.44],[659,.44],[784,.72]].reduce((off,[f,d])=>{
         note(ac,f,t0+off,d,.14); note(ac,f*.5,t0+off,d,.04);
         return off+d*.72;
@@ -380,7 +386,27 @@ function playSound(isHoki){
   }catch(e){console.warn('Audio:',e);}
 }
 
-function testSuara(h){ unlockAudio(); setTimeout(()=>playSound(h),60); }
+// Mulai loop suara — bunyi terus sampai stopAlarmLoop() dipanggil
+function startAlarmLoop(isHoki){
+  stopAlarmLoop(); // pastikan tidak dobel
+  alarmLoopActive = true;
+  playOnce(isHoki); // langsung bunyi pertama kali
+  const interval = ((isHoki ? MELODY_DUR_HOKI : MELODY_DUR_NORMAL) + REPEAT_GAP) * 1000;
+  alarmLoopTimer = setInterval(()=>{
+    if(!alarmLoopActive) return;
+    playOnce(isHoki);
+  }, interval);
+}
+
+// Stop loop saat user klik OK
+function stopAlarmLoop(){
+  alarmLoopActive = false;
+  if(alarmLoopTimer){ clearInterval(alarmLoopTimer); alarmLoopTimer=null; }
+}
+
+// Alias untuk test button
+function playSound(isHoki){ playOnce(isHoki); }
+function testSuara(h){ unlockAudio(); setTimeout(()=>playOnce(h),60); }
 
 /* ── NOTIFIKASI ── */
 let notifOk=false;
@@ -527,12 +553,12 @@ function showNext(){
   document.getElementById('aTutup').textContent=a.t+' WIB';
   document.getElementById('aBuka').textContent=a.b+' WIB';
   document.getElementById('ovl').classList.add('on');
-  updateQ(); playSound(a.name==='HOKIDRAW 5D'); flashTitle(a.name);
+  updateQ(); startAlarmLoop(a.name==='HOKIDRAW 5D'); flashTitle(a.name);
 }
 function dismissAlarm(){
   queue.shift();
   document.getElementById('ovl').classList.remove('on');
-  stopFlash(); updateQ(); renderCards();
+  stopAlarmLoop(); stopFlash(); updateQ(); renderCards();
   if(queue.length) setTimeout(showNext,400); else showing=false;
 }
 function updateQ(){
