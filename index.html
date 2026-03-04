@@ -319,7 +319,7 @@ body{background:var(--bg);color:var(--g);font-family:'Share Tech Mono',monospace
   <canvas id="rain-canvas"></canvas>
   <div id="steal-modal">
     <span class="steal-icon">😱</span>
-    <div class="steal-t1">⚡🩻🥷DANGER!!!🥷🩻⚡</div>
+    <div class="steal-t1">⚡ HACKER TERDETEKSI! ⚡</div>
     <div class="steal-t2">JANGAN CURI DONG!!!</div>
     <div class="steal-t2">SAYA MASIH PEMULA</div>
     <div class="steal-t3">AMPUN PUH SEPUH 🙏</div>
@@ -777,82 +777,114 @@ const DATA=[
   setInterval(draw,40);
 })();
 
-/* ── AUDIO ── */
-let AC=null,audioOk=false;
+/* ── AUDIO — BULLETPROOF ── */
+let AC = null;
+let audioOk = false;
+
 function getAC(){
-  if(!AC) AC=new(window.AudioContext||window.webkitAudioContext)();
-  if(AC.state==='suspended') AC.resume();
+  if(!AC){
+    try{ AC = new(window.AudioContext || window.webkitAudioContext)(); }
+    catch(e){ return null; }
+  }
   return AC;
 }
+
+// Selalu resume AC sebelum play — ini kunci agar tidak silent
+async function resumeAC(){
+  const ac = getAC();
+  if(!ac) return null;
+  if(ac.state === 'suspended'){
+    try{ await ac.resume(); }catch(e){}
+  }
+  return ac;
+}
+
+// Unlock audio pada interaksi pertama
 function unlockAudio(){
-  if(audioOk) return;
+  audioOk = true;
+  resumeAC();
+}
+document.addEventListener('click',    unlockAudio, {passive:true});
+document.addEventListener('touchstart',unlockAudio, {passive:true});
+document.addEventListener('keydown',   unlockAudio, {passive:true});
+
+// Resume AC setiap kali tab jadi visible
+document.addEventListener('visibilitychange', ()=>{
+  if(!document.hidden) resumeAC();
+});
+
+// Resume AC secara periodik supaya tidak pernah stuck suspended
+setInterval(()=>{ if(AC && AC.state==='suspended') AC.resume(); }, 2000);
+
+function note(ac, freq, t, dur, vol){
   try{
-    const ac=getAC(),buf=ac.createBuffer(1,1,22050),src=ac.createBufferSource();
-    src.buffer=buf; src.connect(ac.destination); src.start(0); audioOk=true;
+    const o=ac.createOscillator(), g=ac.createGain(), f=ac.createBiquadFilter();
+    f.type='lowpass'; f.frequency.value=2200;
+    o.type='sine'; o.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t+0.04);
+    g.gain.setValueAtTime(vol, t+dur*0.55);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.connect(f); f.connect(g); g.connect(ac.destination);
+    o.start(t); o.stop(t+dur+0.1);
   }catch(e){}
 }
-document.addEventListener('click',unlockAudio);
-document.addEventListener('touchstart',unlockAudio);
-document.addEventListener('visibilitychange',()=>{if(AC&&AC.state==='suspended')AC.resume();});
 
-function note(ac,freq,t,dur,vol){
-  const o=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter();
-  f.type='lowpass'; f.frequency.value=1900;
-  o.type='sine'; o.frequency.setValueAtTime(freq,t);
-  g.gain.setValueAtTime(0,t);
-  g.gain.linearRampToValueAtTime(vol,t+0.04);
-  g.gain.setValueAtTime(vol,t+dur*0.55);
-  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-  o.connect(f); f.connect(g); g.connect(ac.destination);
-  o.start(t); o.stop(t+dur+0.05);
-}
-
-// Durasi satu melodi (detik) — dipakai untuk atur interval repeat
-const MELODY_DUR_NORMAL = 3.0;  // ~3 detik untuk pasaran biasa
-const MELODY_DUR_HOKI   = 3.5;  // ~3.5 detik untuk hokidraw
-const REPEAT_GAP = 2.5;         // jeda diam antar melodi (detik)
-
-let alarmLoopTimer = null;      // setInterval handle
-let alarmLoopActive = false;
-
-function playOnce(isHoki){
+async function playOnce(isHoki){
+  // Selalu resume dulu sebelum main
+  const ac = await resumeAC();
+  if(!ac) return;
   try{
-    const ac=getAC(), t0=ac.currentTime+0.05;
+    const t0 = ac.currentTime + 0.08;
     if(isHoki){
+      // Melodi megah 5 nada HOKIDRAW
       [[523,.38],[659,.38],[784,.38],[659,.3],[1047,.65]].reduce((off,[f,d])=>{
-        note(ac,f,t0+off,d,.15); note(ac,f*1.5,t0+off,d,.05);
+        note(ac,f,t0+off,d,.18); note(ac,f*1.5,t0+off,d,.06);
         return off+d*.82;
       },0);
     } else {
-      [[880,.44],[659,.44],[784,.72]].reduce((off,[f,d])=>{
-        note(ac,f,t0+off,d,.14); note(ac,f*.5,t0+off,d,.04);
+      // Ding Dong 3 nada merdu
+      [[880,.44],[659,.44],[784,.75]].reduce((off,[f,d])=>{
+        note(ac,f,t0+off,d,.16); note(ac,f*.5,t0+off,d,.05);
         return off+d*.72;
       },0);
     }
-  }catch(e){console.warn('Audio:',e);}
+  }catch(e){ console.warn('playOnce error:',e); }
 }
 
-// Mulai loop suara — bunyi terus sampai stopAlarmLoop() dipanggil
+// ── Alarm loop: bunyi terus sampai dismiss ──
+const REPEAT_MS_NORMAL = 5500;  // ulang tiap 5.5 detik
+const REPEAT_MS_HOKI   = 6200;  // ulang tiap 6.2 detik
+
+let alarmLoopTimer  = null;
+let alarmLoopActive = false;
+let alarmIsHoki     = false;
+
 function startAlarmLoop(isHoki){
-  stopAlarmLoop(); // pastikan tidak dobel
+  stopAlarmLoop();
+  alarmIsHoki     = isHoki;
   alarmLoopActive = true;
-  playOnce(isHoki); // langsung bunyi pertama kali
-  const interval = ((isHoki ? MELODY_DUR_HOKI : MELODY_DUR_NORMAL) + REPEAT_GAP) * 1000;
-  alarmLoopTimer = setInterval(()=>{
+
+  // Bunyi pertama — resume dulu, baru play
+  resumeAC().then(()=> playOnce(isHoki));
+
+  // Loop ulang
+  alarmLoopTimer = setInterval(async ()=>{
     if(!alarmLoopActive) return;
-    playOnce(isHoki);
-  }, interval);
+    await resumeAC();
+    playOnce(alarmIsHoki);
+  }, isHoki ? REPEAT_MS_HOKI : REPEAT_MS_NORMAL);
 }
 
-// Stop loop saat user klik OK
 function stopAlarmLoop(){
   alarmLoopActive = false;
-  if(alarmLoopTimer){ clearInterval(alarmLoopTimer); alarmLoopTimer=null; }
+  if(alarmLoopTimer){ clearInterval(alarmLoopTimer); alarmLoopTimer = null; }
 }
 
-// Alias untuk test button
-function playSound(isHoki){ playOnce(isHoki); }
-function testSuara(h){ unlockAudio(); setTimeout(()=>playOnce(h),60); }
+function testSuara(h){
+  unlockAudio();
+  setTimeout(()=> playOnce(h), 80);
+}
 
 /* ── NOTIFIKASI ── */
 let notifOk=false;
@@ -1061,34 +1093,84 @@ function stopFlash(){
   document.title='CEK JADWAL TOGEL ALHACKER168';
 }
 
-/* ── CHECK ALARMS ── */
+/* ── CHECK ALARMS — BULLETPROOF ── */
+// Simpan menit terakhir yang sudah dicek agar tidak dobel
+// dan tidak terlewat meski browser sedikit lambat
+let lastCheckedMin = -1;
+
 function checkAlarms(){
-  const n=new Date(),s=n.getSeconds();
-  if(s>2) return;
-  const nm=nowMin();
-  DATA.forEach(p=>{
+  const now = new Date();
+  const nm  = now.getHours() * 60 + now.getMinutes();
+  const sec = now.getSeconds();
+
+  // Cek hanya sekali per menit — tapi window lebar (detik 0-29)
+  // supaya tidak terlewat meski loop sedikit lambat
+  if(nm === lastCheckedMin) return;   // menit ini sudah dicek
+  if(sec > 29) return;                // tunggu sampai menit berikutnya fresh
+
+  lastCheckedMin = nm;               // tandai sudah dicek
+
+  DATA.forEach(p => {
     if(p.hoki){
-      if(n.getMinutes()===0){
-        const k=aKey('HOKIDRAW 5D',`${pad(n.getHours())}:00`);
-        if(!fired.has(k)) enqueue('HOKIDRAW 5D',`${pad(n.getHours())}:00`,`${pad((n.getHours()+1)%24)}:00`);
+      // HOKIDRAW: setiap pergantian jam (menit === 0)
+      if(now.getMinutes() === 0){
+        const hh  = pad(now.getHours());
+        const nhh = pad((now.getHours()+1) % 24);
+        enqueue('HOKIDRAW 5D', `${hh}:00`, `${nhh}:00`);
       }
       return;
     }
     if(!p.t) return;
-    if(toMin(p.t)===nm) enqueue(p.n,p.t,p.b);
+    // Pasaran biasa: cek apakah waktu tutupnya sama dengan menit sekarang
+    if(toMin(p.t) === nm){
+      enqueue(p.n, p.t, p.b);
+    }
+  });
+}
+
+// Cek juga alarm yang mungkin terlewat saat buka halaman
+// (misal buka jam 22:01, alarm 22:00 belum ter-fire hari ini)
+function checkMissedAlarms(){
+  const now = new Date();
+  const nm  = now.getHours() * 60 + now.getMinutes();
+
+  DATA.forEach(p => {
+    if(p.hoki) return; // hokidraw skip
+    if(!p.t) return;
+    const tm = toMin(p.t);
+    // Terlewat jika: jam tutup sudah lewat (< nm) tapi belum > 5 menit (masih relevan)
+    // dan belum pernah fire hari ini
+    const diff = nm - tm;
+    if(diff > 0 && diff <= 5){
+      const k = aKey(p.n, p.t);
+      if(!fired.has(k)){
+        enqueue(p.n, p.t, p.b);
+      }
+    }
   });
 }
 
 /* ── MAIN LOOP ── */
-let lastMin=-1;
+let lastMin = -1;
+
 function loop(){
-  tickClock(); tickNext(); checkAlarms();
-  const m=new Date().getMinutes();
-  if(m!==lastMin){lastMin=m;renderCards();}
+  tickClock();
+  tickNext();
+  checkAlarms();
+
+  // Render ulang kartu setiap ganti menit
+  const m = new Date().getMinutes();
+  if(m !== lastMin){ lastMin = m; renderCards(); }
 }
+
+// Cek alarm yang terlewat saat pertama buka
+checkMissedAlarms();
+
 renderCards();
-setInterval(loop,1000);
+// Jalankan loop setiap 500ms supaya lebih responsif (tidak ketinggalan detik)
+setInterval(loop, 500);
 loop();
+
 </script>
 </body>
 </html>
