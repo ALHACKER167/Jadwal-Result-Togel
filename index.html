@@ -319,7 +319,7 @@ body{background:var(--bg);color:var(--g);font-family:'Share Tech Mono',monospace
   <canvas id="rain-canvas"></canvas>
   <div id="steal-modal">
     <span class="steal-icon">😱</span>
-    <div class="steal-t1">⚡ HACKER TERDETEKSI! ⚡</div>
+    <div class="steal-t1">⚡🩻🥷DANGER!!!🥷🩻⚡</div>
     <div class="steal-t2">JANGAN CURI DONG!!!</div>
     <div class="steal-t2">SAYA MASIH PEMULA</div>
     <div class="steal-t3">AMPUN PUH SEPUH 🙏</div>
@@ -470,48 +470,126 @@ const DATA=[
 
 /* ── LOADING SCREEN ── */
 (function(){
+  /* Matrix rain */
   const lc=document.getElementById('loader-canvas');
   const lx=lc.getContext('2d');
-  const CH='アイウエオカキクケコサシスセソ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%';
-  const FS=13; let dr2=[];
-  function resL(){lc.width=window.innerWidth;lc.height=window.innerHeight;
-    dr2=Array.from({length:Math.floor(lc.width/FS)},()=>Math.floor(Math.random()*-lc.height/FS));}
+  const CH='アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&';
+  const FS=14; let dr2=[];
+  function resL(){
+    lc.width=window.innerWidth; lc.height=window.innerHeight;
+    dr2=Array.from({length:Math.floor(lc.width/FS)},()=>Math.floor(Math.random()*-lc.height/FS));
+  }
   resL(); window.addEventListener('resize',resL);
   function drawL(){
-    lx.fillStyle='rgba(0,8,0,0.08)';lx.fillRect(0,0,lc.width,lc.height);
+    lx.fillStyle='rgba(0,8,0,0.08)'; lx.fillRect(0,0,lc.width,lc.height);
     lx.font=`bold ${FS}px 'Share Tech Mono',monospace`;
     for(let i=0;i<dr2.length;i++){
       const c=CH[Math.floor(Math.random()*CH.length)],x=i*FS,y=dr2[i]*FS,r=Math.random();
-      lx.fillStyle=r>.95?'#ffffff':r>.7?'#aaffbb':'#00ff41';
+      lx.fillStyle=r>.95?'#ffffff':r>.72?'#aaffbb':'#00ff41';
       lx.fillText(c,x,y);
-      if(y>lc.height&&Math.random()>.975)dr2[i]=0;else dr2[i]++;
+      if(y>lc.height&&Math.random()>.975)dr2[i]=0; else dr2[i]++;
     }
   }
-  const ldInt=setInterval(drawL,40);
+  const ldMatrixInt=setInterval(drawL,40);
 
+  /* Lightning on loader */
+  const ltc=document.getElementById('loader-lt-canvas');
+  const ltx=ltc.getContext('2d');
+  function resLT(){ ltc.width=window.innerWidth; ltc.height=window.innerHeight; }
+  resLT(); window.addEventListener('resize',resLT);
+
+  function ldBolt(x1,y1,x2,y2,w,depth){
+    if(depth<=0||w<0.25) return;
+    const mx=(x1+x2)/2+(Math.random()-.5)*Math.abs(y2-y1)*.85;
+    const my=(y1+y2)/2+(Math.random()-.5)*35;
+    ltx.beginPath(); ltx.moveTo(x1,y1); ltx.lineTo(mx,my); ltx.lineTo(x2,y2);
+    ltx.strokeStyle=`rgba(255,255,180,${0.55+Math.random()*.45})`;
+    ltx.lineWidth=w; ltx.shadowColor='#ffffaa'; ltx.shadowBlur=w*15;
+    ltx.stroke();
+    ltx.beginPath(); ltx.moveTo(x1,y1); ltx.lineTo(mx,my); ltx.lineTo(x2,y2);
+    ltx.strokeStyle=`rgba(255,220,60,${0.1+Math.random()*.2})`;
+    ltx.lineWidth=w*4; ltx.shadowBlur=w*30; ltx.stroke();
+    if(Math.random()>.42) ldBolt(mx,my,mx+(Math.random()-.5)*230,my+50+Math.random()*170,w*.55,depth-1);
+    if(Math.random()>.65) ldBolt(mx,my,mx+(Math.random()-.5)*140,my-30+Math.random()*90,w*.4,depth-1);
+  }
+  function ldFlash(){
+    ltx.clearRect(0,0,ltc.width,ltc.height);
+    const fl=Math.random()*.14;
+    if(fl>.05){ ltx.fillStyle=`rgba(200,230,255,${fl})`; ltx.fillRect(0,0,ltc.width,ltc.height); }
+    const nb=1+Math.floor(Math.random()*2);
+    for(let i=0;i<nb;i++){
+      const sx=80+Math.random()*(ltc.width-160);
+      ldBolt(sx,0,sx+(Math.random()-.5)*260,ltc.height*.4+Math.random()*ltc.height*.45,1.3+Math.random()*1.7,5);
+    }
+  }
+
+  /* Thunder sound */
+  let ACld=null;
+  function getACld(){
+    if(!ACld) ACld=new(window.AudioContext||window.webkitAudioContext)();
+    if(ACld.state==='suspended') ACld.resume();
+    return ACld;
+  }
+  function ldThunder(){
+    try{
+      const ac=getACld(), sr=ac.sampleRate, dur=1.6+Math.random()*1.2;
+      const buf=ac.createBuffer(2,sr*dur,sr);
+      for(let ch=0;ch<2;ch++){
+        const d=buf.getChannelData(ch);
+        for(let i=0;i<d.length;i++){
+          const crack=i<sr*.045?(1-(i/(sr*.045)))*.9:0;
+          const env=i<sr*.09?i/(sr*.09):Math.exp(-(i-sr*.09)/(sr*.52));
+          d[i]=crack*(Math.random()*2-1)+(Math.random()*2-1)*env*.6;
+        }
+      }
+      const src=ac.createBufferSource();
+      const gain=ac.createGain(); gain.gain.value=0.5+Math.random()*.3;
+      const flt=ac.createBiquadFilter(); flt.type='lowpass'; flt.frequency.value=165;
+      const comp=ac.createDynamicsCompressor(); comp.threshold.value=-18; comp.ratio.value=10;
+      src.buffer=buf; src.connect(flt); flt.connect(comp); comp.connect(gain); gain.connect(ac.destination);
+      src.start();
+    }catch(e){}
+  }
+  /* Auto-unlock audio after small delay */
+  setTimeout(()=>{
+    try{ const ac=getACld(),b=ac.createBuffer(1,1,22050),s=ac.createBufferSource();
+      s.buffer=b;s.connect(ac.destination);s.start(); }catch(e){}
+  },300);
+
+  /* Lightning & thunder loops during loading */
+  const ldLtInt=setInterval(()=>{
+    ldFlash();
+    if(Math.random()>.45) setTimeout(ldFlash,75);
+    if(Math.random()>.6)  setTimeout(ldFlash,160);
+  },550);
+  const ldTdInt=setInterval(()=>{ ldThunder(); },1600);
+
+  /* Progress bar */
   const logs=[
     'Memuat database pasaran...','Menghubungkan ke server...','Inisialisasi alarm sistem...',
-    'Memuat jadwal WIB...','Konfigurasi notifikasi...','Mengaktifkan matrix...',
-    'Verifikasi keamanan...','Sistem siap digunakan!',
+    'Memuat jadwal WIB...','Konfigurasi notifikasi...','Mengaktifkan matrix rain...',
+    'Verifikasi keamanan sistem...','Sistem siap digunakan! ✓',
   ];
   const bar=document.getElementById('ldBar');
   const pct=document.getElementById('ldPct');
   const log=document.getElementById('ldLog');
   let p=0, li=0;
   const step=setInterval(()=>{
-    p+=Math.random()*8+4; if(p>100)p=100;
+    p+=Math.random()*7+3; if(p>100)p=100;
     bar.style.width=p+'%';
     pct.textContent=Math.floor(p)+'%';
     if(li<logs.length) log.textContent='▸ '+logs[li++];
     if(p>=100){
       clearInterval(step);
       setTimeout(()=>{
+        clearInterval(ldLtInt); clearInterval(ldTdInt);
+        ltx.clearRect(0,0,ltc.width,ltc.height);
         const ld=document.getElementById('loader');
         ld.classList.add('fade-out');
-        setTimeout(()=>{ld.style.display='none';clearInterval(ldInt);},650);
-      },400);
+        setTimeout(()=>{ ld.style.display='none'; clearInterval(ldMatrixInt); },700);
+      },500);
     }
-  },130);
+  },140);
 })();
 
 /* ── LIGHTNING / ANTI-STEAL ── */
@@ -900,35 +978,75 @@ function tickNext(){
   document.getElementById('clkNI').textContent=bn?`▸ ${bn} | ${bt} WIB`:'';
 }
 
-/* ── ALARM QUEUE ── */
-let queue=[],showing=false,fired=new Set(),alarmCnt=0,titleTmr=null;
-function dayKey(){const n=new Date();return`${n.getFullYear()}-${n.getMonth()}-${n.getDate()}`;}
-function aKey(name,t){return`${dayKey()}-${name}-${t}`;}
+/* ── ALARM QUEUE + PERSISTENT STATE (localStorage) ── */
+
+// ── Simpan & load state harian dari localStorage ──
+function dayKey(){ const n=new Date(); return`${n.getFullYear()}-${n.getMonth()}-${n.getDate()}`; }
+function aKey(name,t){ return`${dayKey()}-${name}-${t}`; }
+
+function loadState(){
+  try{
+    const raw=localStorage.getItem('ah168_state');
+    if(!raw) return {fired:[],count:0,day:dayKey()};
+    const s=JSON.parse(raw);
+    // Reset jika beda hari
+    if(s.day!==dayKey()) return {fired:[],count:0,day:dayKey()};
+    return s;
+  }catch(e){ return {fired:[],count:0,day:dayKey()}; }
+}
+
+function saveState(){
+  try{
+    localStorage.setItem('ah168_state', JSON.stringify({
+      fired:[...fired],
+      count: alarmCnt,
+      day: dayKey()
+    }));
+  }catch(e){}
+}
+
+// ── Init dari localStorage ──
+const _s = loadState();
+let fired   = new Set(_s.fired);
+let alarmCnt= _s.count;
+let queue=[], showing=false, titleTmr=null;
+
+// Tampilkan count yang sudah tersimpan
+document.getElementById('sA').textContent  = alarmCnt;
+document.getElementById('stA').textContent = alarmCnt;
 
 function enqueue(name,t,b){
-  const k=aKey(name,t); if(fired.has(k)) return;
-  fired.add(k); alarmCnt++;
-  document.getElementById('sA').textContent=alarmCnt;
-  document.getElementById('stA').textContent=alarmCnt;
-  queue.push({name,t,b}); updateQ();
+  const k=aKey(name,t);
+  if(fired.has(k)) return;       // sudah pernah bunyi hari ini → skip
+  fired.add(k);
+  alarmCnt++;
+  saveState();                   // simpan ke localStorage
+  document.getElementById('sA').textContent  = alarmCnt;
+  document.getElementById('stA').textContent = alarmCnt;
+  queue.push({name,t,b});
+  updateQ();
   sendNotif(name,t,b);
   if(!showing) showNext();
 }
+
 function showNext(){
-  if(!queue.length){showing=false;return;}
-  showing=true; const a=queue[0];
-  document.getElementById('aMkt').textContent=a.name;
-  document.getElementById('aTutup').textContent=a.t+' WIB';
-  document.getElementById('aBuka').textContent=a.b+' WIB';
+  if(!queue.length){ showing=false; return; }
+  showing=true;
+  const a=queue[0];
+  document.getElementById('aMkt').textContent  = a.name;
+  document.getElementById('aTutup').textContent= a.t+' WIB';
+  document.getElementById('aBuka').textContent = a.b+' WIB';
   document.getElementById('ovl').classList.add('on');
   updateQ(); startAlarmLoop(a.name==='HOKIDRAW 5D'); flashTitle(a.name);
 }
+
 function dismissAlarm(){
   queue.shift();
   document.getElementById('ovl').classList.remove('on');
   stopAlarmLoop(); stopFlash(); updateQ(); renderCards();
   if(queue.length) setTimeout(showNext,400); else showing=false;
 }
+
 function updateQ(){
   const n=queue.length;
   document.getElementById('qnum').textContent=n;
@@ -936,10 +1054,10 @@ function updateQ(){
 }
 function flashTitle(name){
   let on=true;
-  titleTmr=setInterval(()=>{document.title=on?`⚠️ BET CLOSE: ${name}`:'🔴 ALHACKER168';on=!on;},700);
+  titleTmr=setInterval(()=>{ document.title=on?`⚠️ BET CLOSE: ${name}`:'🔴 ALHACKER168'; on=!on; },700);
 }
 function stopFlash(){
-  if(titleTmr){clearInterval(titleTmr);titleTmr=null;}
+  if(titleTmr){ clearInterval(titleTmr); titleTmr=null; }
   document.title='CEK JADWAL TOGEL ALHACKER168';
 }
 
